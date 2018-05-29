@@ -1,0 +1,16 @@
+# Output products list for <letters_spritesheet>
+letters_spritesheet/blk_mem_gen_v7_3_readme.txt
+letters_spritesheet/doc/blk_mem_gen_v7_3_vinfo.html
+letters_spritesheet/doc/pg058-blk-mem-gen.pdf
+letters_spritesheet.asy
+letters_spritesheet.gise
+letters_spritesheet.mif
+letters_spritesheet.ngc
+letters_spritesheet.sym
+letters_spritesheet.v
+letters_spritesheet.veo
+letters_spritesheet.xco
+letters_spritesheet.xise
+letters_spritesheet_flist.txt
+letters_spritesheet_xmdf.tcl
+summary.log

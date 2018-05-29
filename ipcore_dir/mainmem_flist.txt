@@ -1,0 +1,15 @@
+# Output products list for <mainmem>
+mainmem/blk_mem_gen_v7_3_readme.txt
+mainmem/doc/blk_mem_gen_v7_3_vinfo.html
+mainmem/doc/pg058-blk-mem-gen.pdf
+mainmem.asy
+mainmem.gise
+mainmem.ngc
+mainmem.sym
+mainmem.v
+mainmem.veo
+mainmem.xco
+mainmem.xise
+mainmem_flist.txt
+mainmem_xmdf.tcl
+summary.log

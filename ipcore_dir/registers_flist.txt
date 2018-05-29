@@ -1,0 +1,15 @@
+# Output products list for <registers>
+registers/blk_mem_gen_v7_3_readme.txt
+registers/doc/blk_mem_gen_v7_3_vinfo.html
+registers/doc/pg058-blk-mem-gen.pdf
+registers.asy
+registers.gise
+registers.ngc
+registers.sym
+registers.v
+registers.veo
+registers.xco
+registers.xise
+registers_flist.txt
+registers_xmdf.tcl
+summary.log
