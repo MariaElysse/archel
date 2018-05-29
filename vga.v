@@ -15,17 +15,18 @@
 //
 // Revision: 
 // Revision 0.01 - File Created
-// Additional Comments: enabled pixels will be green r:0,b:0,g:3'b111. disabled pixels black(0/0/0)
+// Additional Comments: enabled pixels will be grn r:0,b:0,g:3'b111. disabled pixels black(0/0/0)
 //
 //////////////////////////////////////////////////////////////////////////////////
 module vga(
 	input wire dclk, //pixel clk 25mhz
 	input wire rst,  //async reset (may not be necessary)
 	input wire [639:0] line, 
+	output wire [8:0] vram_read_addr,
 	output wire hsync, //horizontal sync
 	output wire vsync, //vertical sync 
 	output reg [2:0] red, //red value for pixel
-	output reg [2:0] grn, //pixel green value
+	output reg [2:0] grn, //pixel grn value
 	output reg [1:0] blu //blu 
     );
 
@@ -44,7 +45,7 @@ parameter h_backporch = 144;
 parameter h_frntporch = 784;
 
 parameter v_backporch = 31;
-parameter v_backporch = 511; 
+parameter v_frntporch = 511; 
 
 //vram 
 //which position are we at? (h/v)
@@ -53,35 +54,35 @@ reg [9:0] verti_ln;
 reg [18:0] px;
 
 //sync pulses 
-assign hsync = (hc < hpulse)? 0:1;
-assign vsync = (vc < vpulse)? 0:1;
-
+assign hsync = (horiz_px < hpulse)? 0:1;
+assign vsync = (verti_ln < vpulse)? 0:1;
+assign vram_read_addr = verti_ln;
 //access to the ram
 
-always @(posedge dclk, posedge clr) begin 
-if (clr) begin 
-	hc <= 0;
-	vc <= 0; 
+always @(posedge dclk, posedge rst) begin 
+if (rst) begin 
+	horiz_px <= 0;
+	verti_ln <= 0; 
 	px <= 0;
 end //(clr)
 else begin
 	if (
-		vc >= v_backporch && vc < v_frontporch &&
-		hc >= h_backporch && hc < h_frontporch
+		verti_ln >= v_backporch && verti_ln < v_frntporch &&
+		horiz_px >= h_backporch && horiz_px < h_frntporch
 	) begin 
 		red = 3'b000;
-		blue = 2'b00;
-		if (line[hc-1] == 1'b1) begin 
-			green = 3'b111;
+		blu = 2'b00;
+		if (line[horiz_px-1] == 1'b1) begin 
+			grn = 3'b111;
 		end 
 		else begin 
-			green = 3'b000;
+			grn = 3'b000;
 		end;
 	end
 	else begin  //outside the display range
 		red = 3'b000;
-		green = 3'b000;
-		blue = 2'b00;
+		grn = 3'b000;
+		blu = 2'b00;
 	end 	
 end //else clr
 end //always

@@ -57,19 +57,37 @@ segdisplay U2(
 	);
 
 // VGA controller
-vga640x480 U3(
+//vga640x480 U3(
+//	.dclk(dclk),
+//	.clr(clr),
+//	.hsync(hsync),
+//	.vsync(vsync),
+//	.red(red),
+//	.green(green),
+//	.blue(blue)
+//	);
+//actually do need to use dual-channel memory
+wire [639:0] read_from_vram;
+wire [8:0] vram_read_addr;
+vram vram_(
+	.clka(clk),
+	.wea('b1), //always true? idk why this is still here
+	.addra(vram_write_addr), //address in
+	.dina(save_to_vram), //data in
+	.clkb(clk),
+	.addrb(vram_read_addr),
+	.doutb(read_from_vram)
+);
+
+vga vga_(
 	.dclk(dclk),
-	.clr(clr),
+	.rst(rst), //maybe not?
+	.line(read_from_vram),
+	.vram_read_addr(vram_read_addr),
 	.hsync(hsync),
 	.vsync(vsync),
 	.red(red),
-	.green(green),
-	.blue(blue)
-	);
-//potentially may need to use dual-channel memory
-vram vram_(
-	.clka(dclk),
-	.wea(vram_write_enable),
-	.addra(vram_addr)
-	
+	.grn(green),
+	.blu(blue)
+);
 endmodule

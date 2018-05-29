@@ -39,9 +39,9 @@
     <file xil_pn:fileType="FILE_VERILOG" xil_pn:name="ipcore_dir/registers.v" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_VEO" xil_pn:name="ipcore_dir/registers.veo" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_ASY" xil_pn:name="ipcore_dir/vram.asy" xil_pn:origination="imported"/>
-    <file xil_pn:fileType="FILE_NGC" xil_pn:name="ipcore_dir/vram.ngc" xil_pn:origination="imported"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_NGC" xil_pn:name="ipcore_dir/vram.ngc" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_SYMBOL" xil_pn:name="ipcore_dir/vram.sym" xil_pn:origination="imported"/>
-    <file xil_pn:fileType="FILE_VERILOG" xil_pn:name="ipcore_dir/vram.v" xil_pn:origination="imported"/>
+    <file xil_pn:branch="Implementation" xil_pn:fileType="FILE_VERILOG" xil_pn:name="ipcore_dir/vram.v" xil_pn:origination="imported"/>
     <file xil_pn:fileType="FILE_VEO" xil_pn:name="ipcore_dir/vram.veo" xil_pn:origination="imported"/>
   </files>
 

@@ -48,23 +48,23 @@ module vram(
 
 input clka;
 input [0 : 0] wea;
-input [9 : 0] addra;
-input [479 : 0] dina;
+input [8 : 0] addra;
+input [639 : 0] dina;
 input clkb;
-input [9 : 0] addrb;
-output [479 : 0] doutb;
+input [8 : 0] addrb;
+output [639 : 0] doutb;
 
 // synthesis translate_off
 
   BLK_MEM_GEN_V7_3 #(
-    .C_ADDRA_WIDTH(10),
-    .C_ADDRB_WIDTH(10),
+    .C_ADDRA_WIDTH(9),
+    .C_ADDRB_WIDTH(9),
     .C_ALGORITHM(1),
     .C_AXI_ID_WIDTH(4),
     .C_AXI_SLAVE_TYPE(0),
     .C_AXI_TYPE(1),
     .C_BYTE_SIZE(9),
-    .C_COMMON_CLK(0),
+    .C_COMMON_CLK(1),
     .C_DEFAULT_DATA("0"),
     .C_DISABLE_WARN_BHV_COLL(0),
     .C_DISABLE_WARN_BHV_RANGE(0),
@@ -93,10 +93,10 @@ output [479 : 0] doutb;
     .C_MEM_TYPE(1),
     .C_MUX_PIPELINE_STAGES(0),
     .C_PRIM_TYPE(1),
-    .C_READ_DEPTH_A(640),
-    .C_READ_DEPTH_B(640),
-    .C_READ_WIDTH_A(480),
-    .C_READ_WIDTH_B(480),
+    .C_READ_DEPTH_A(480),
+    .C_READ_DEPTH_B(480),
+    .C_READ_WIDTH_A(640),
+    .C_READ_WIDTH_B(640),
     .C_RST_PRIORITY_A("CE"),
     .C_RST_PRIORITY_B("CE"),
     .C_RST_TYPE("SYNC"),
@@ -111,12 +111,12 @@ output [479 : 0] doutb;
     .C_USE_SOFTECC(0),
     .C_WEA_WIDTH(1),
     .C_WEB_WIDTH(1),
-    .C_WRITE_DEPTH_A(640),
-    .C_WRITE_DEPTH_B(640),
-    .C_WRITE_MODE_A("WRITE_FIRST"),
-    .C_WRITE_MODE_B("WRITE_FIRST"),
-    .C_WRITE_WIDTH_A(480),
-    .C_WRITE_WIDTH_B(480),
+    .C_WRITE_DEPTH_A(480),
+    .C_WRITE_DEPTH_B(480),
+    .C_WRITE_MODE_A("READ_FIRST"),
+    .C_WRITE_MODE_B("READ_FIRST"),
+    .C_WRITE_WIDTH_A(640),
+    .C_WRITE_WIDTH_B(640),
     .C_XDEVICEFAMILY("spartan6")
   )
   inst (
