@@ -6,3 +6,4 @@ iseconfig/
 *.stx
 *.xst
 xst
+*.gise

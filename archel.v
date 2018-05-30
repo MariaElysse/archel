@@ -7,14 +7,6 @@ module archel (
   );
 
   // ===========================================================================
-  // WB : Writeback
-  // ===========================================================================
-
-  wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
-  wire [2:0]  WB_writeaddr = MEMWB_WA;
-  wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
-
-  // ===========================================================================
   // VGA Output
   // ===========================================================================
   
@@ -33,6 +25,14 @@ module archel (
                       .btn_state(step_btn_state),
                       .btn_down(step_btn_down),
                       .btn_up(step_btn_up));
+
+  // ===========================================================================
+  // WB : Writeback (Declarations)
+  // ===========================================================================
+  
+  wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
+  wire [2:0]  WB_writeaddr = MEMWB_WA;
+  wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
 
   // ===========================================================================
   // IF : Instruction Fetch
@@ -236,6 +236,11 @@ module archel (
     end
   end
   
+  // ===========================================================================
+  // WB : Writeback
+  // ===========================================================================
+
+  // wires implicitly declared earlier
 
 
   
