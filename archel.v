@@ -43,7 +43,13 @@ module archel (
   reg [5:0] PC = 6'b000000;
   wire [15:0] IF_insn;
 
-  insn_mem insn_mem(.addr(PC), .data(IF_insn));
+  // insn_mem insn_mem(.addr(PC), .data(IF_insn));
+  insn_mem_16x256 insn_mem(.clka(CLK),
+                           .rsta(RST),
+                           .addra(PC),
+                           .douta(IF_insn),
+                           .wea(),
+                           .dina());
 
   always @ (posedge CLK) begin
     if (RST) begin
@@ -97,18 +103,17 @@ module archel (
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  register_file_16x256 regfile(.clka(CLK),
-                               .clkb(CLK),
-                               .rsta(RST),
-                               
-                               .addra(a_addr),
-                               .douta(ID_RD1),
-                               .wea(WB_CTL_regwrite), // write enable
-                               .dina(WB_writedata),
-                               
-                               .addrb(IFID_insn[8:6]),
-                               .doutb(ID_RD2));
-  
+  register_file_16x16 regfile(.clka(CLK),
+                              .clkb(CLK),
+                              .rsta(RST),
+                              
+                              .addra(a_addr),
+                              .douta(ID_RD1),
+                              .wea(WB_CTL_regwrite), // write enable
+                              .dina(WB_writedata),
+                              
+                              .addrb(IFID_insn[8:6]),
+                              .doutb(ID_RD2));
 //  regfile regfile(.RA1(IFID_insn[11:9]),
 //                  .RA2(IFID_insn[8:6]),
 //                  .RD1(ID_RD1),
@@ -202,11 +207,17 @@ module archel (
 
   wire [15:0] MEM_data;
 
-  data_mem data_mem(.RA(EXMEM_aluout),
-                    .read(EXMEM_CTL_MEM_memread),
-                    .write(EXMEM_CTL_MEM_memwrite),
-                    .WD(EXMEM_R2),
-                    .RD(MEM_data));
+  data_mem_16x256 data_mem(.clka(CLK),
+                           .rsta(RST),
+                           .addra(EXMEM_aluout),
+                           .douta(MEM_data),
+                           .wea(EXMEM_CTL_MEM_memwrite),
+                           .dina(EXMEM_R2));
+  // data_mem data_mem(.RA(EXMEM_aluout),
+  //                   .read(EXMEM_CTL_MEM_memread),
+  //                   .write(EXMEM_CTL_MEM_memwrite),
+  //                   .WD(EXMEM_R2),
+  //                   .RD(MEM_data));
 
   always @ (posedge CLK) begin
     if (RST) begin
