@@ -31,7 +31,7 @@ module archel (
   // ===========================================================================
   
   wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
-  wire [2:0]  WB_writeaddr = MEMWB_WA;
+  wire [3:0]  WB_writeaddr = MEMWB_WA;
   wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
 
   // ===========================================================================
@@ -40,7 +40,7 @@ module archel (
   
   reg [15:0] IFID_insn;
 
-  reg [5:0] PC = 6'b000000;
+  reg [7:0] PC = 8'b00000000;
   wire [15:0] IF_insn;
 
   // insn_mem insn_mem(.addr(PC), .data(IF_insn));
@@ -58,7 +58,7 @@ module archel (
     end
     else if (PAUSE == 0) begin
       IFID_insn <= IF_insn;
-      PC <= PC + 4;
+      PC <= PC + 2;
     end
   end
   
@@ -76,8 +76,8 @@ module archel (
   reg [15:0] IDEX_R1;
   reg [15:0] IDEX_R2;
   reg [15:0] IDEX_sext_imm;
-  reg [2:0]  IDEX_rt;
-  reg [2:0]  IDEX_rd;
+  reg [3:0]  IDEX_rs; // R dest for I-type insns
+  reg [3:0]  IDEX_rd; // R dest for R-type insns
 
   wire       ID_alusrc;
   wire [4:0] ID_aluop;
@@ -98,7 +98,7 @@ module archel (
 
   wire [15:0] ID_RD1;
   wire [15:0] ID_RD2;
-  wire [2:0] a_addr = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:9];
+  wire [3:0] a_addr = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
   
   // DO NOT read and write in the same cycle
   // a: read_1 and write
@@ -107,12 +107,12 @@ module archel (
                               .clkb(CLK),
                               .rsta(RST),
                               
-                              .addra(a_addr),
+                              .addra(a_addr), // rs (read) / WA (write)
                               .douta(ID_RD1),
                               .wea(WB_CTL_regwrite), // write enable
                               .dina(WB_writedata),
                               
-                              .addrb(IFID_insn[8:6]),
+                              .addrb(IFID_insn[7:4]), // rt (read)
                               .doutb(ID_RD2));
 //  regfile regfile(.RA1(IFID_insn[11:9]),
 //                  .RA2(IFID_insn[8:6]),
@@ -134,7 +134,7 @@ module archel (
       IDEX_R1 <= 0;
       IDEX_R2 <= 0;
       IDEX_sext_imm <= 0;
-      IDEX_rt <= 0;
+      IDEX_rs <= 0;
       IDEX_rd <= 0;
     end
     else if (PAUSE == 0) begin
@@ -147,9 +147,9 @@ module archel (
       IDEX_CTL_WB_memtoreg <= ID_memtoreg;
       IDEX_R1 <= ID_RD1;
       IDEX_R2 <= ID_RD2;
-      IDEX_sext_imm <= { {10{IFID_insn[5]}}, IFID_insn[5:0] };
-      IDEX_rt <= IFID_insn[8:6];
-      IDEX_rd <= IFID_insn[5:3];
+      IDEX_sext_imm <= { {8{IFID_insn[7]}}, IFID_insn[7:0] };
+      IDEX_rs <= IFID_insn[11:8];
+      IDEX_rd <= IFID_insn[3:0];
     end
   end
 
@@ -163,7 +163,7 @@ module archel (
   reg        EXMEM_CTL_WB_memtoreg;
   reg [15:0] EXMEM_aluout;
   reg [15:0] EXMEM_R2;
-  reg [2:0]  EXMEM_WA;
+  reg [3:0]  EXMEM_WA;
 
   wire [15:0] EX_alub = IDEX_CTL_EX_alusrc ? IDEX_sext_imm : IDEX_R2;
   wire [15:0] EX_aluout;
@@ -191,7 +191,7 @@ module archel (
       EXMEM_CTL_WB_memtoreg <= IDEX_CTL_WB_memtoreg;
       EXMEM_aluout <= EX_aluout;
       EXMEM_R2 <= IDEX_R2;
-      EXMEM_WA <= IDEX_CTL_EX_regdst ? IDEX_rd : IDEX_rt;
+      EXMEM_WA <= IDEX_CTL_EX_regdst ? IDEX_rd : IDEX_rs;
     end
   end
 
@@ -203,7 +203,7 @@ module archel (
   reg        MEMWB_CTL_WB_memtoreg;
   reg [15:0] MEMWB_WD_mem;
   reg [15:0] MEMWB_WD_reg;
-  reg [2:0]  MEMWB_WA;
+  reg [3:0]  MEMWB_WA;
 
   wire [15:0] MEM_data;
 
