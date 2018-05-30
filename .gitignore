@@ -1,0 +1,8 @@
+*.html
+_xmsgs/
+iseconfig/
+*.xmsgs
+*.prj
+*.stx
+*.xst
+xst
