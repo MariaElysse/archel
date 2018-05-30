@@ -1,0 +1,6 @@
+; trivial program
+memory_initialization_radix=2;
+memory_initialization_vector=
+0001000100000011,
+0001001000000100,
+0000000100100011;

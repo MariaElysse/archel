@@ -1,5 +1,4 @@
 # Output products list for <insn_mem_16x256>
-_xmsgs\pn_parser.xmsgs
 insn_mem_16x256.asy
 insn_mem_16x256.gise
 insn_mem_16x256.ngc

@@ -53,7 +53,12 @@ module tb_archel;
 		#100;
         
 		// Add stimulus here
+		RST = 1;
+		#10;
+		RST = 0;
+		#10;
 
+		
 	end
       
 endmodule

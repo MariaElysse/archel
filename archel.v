@@ -44,12 +44,10 @@ module archel (
   wire [15:0] IF_insn;
 
   // insn_mem insn_mem(.addr(PC), .data(IF_insn));
-  insn_mem_16x256 insn_mem(.clka(CLK),
-                           .rsta(RST),
-                           .addra(PC),
-                           .douta(IF_insn),
-                           .wea(),
-                           .dina());
+  insn_mem_16x256 insn_mem(.clk(CLK),
+                           .rst(RST),
+                           .ra(PC),
+                           .rd(IF_insn));
 
   always @ (posedge CLK) begin
     if (RST) begin
@@ -98,29 +96,21 @@ module archel (
 
   wire [15:0] ID_RD1;
   wire [15:0] ID_RD2;
-  wire [3:0] a_addr = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
   
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  register_file_16x16 regfile(.clka(CLK),
-                              .clkb(CLK),
-                              .rsta(RST),
+  register_file_16x16 regfile(.clk(CLK),
+                              .rst(RST),
                               
-                              .addra(a_addr), // rs (read) / WA (write)
-                              .douta(ID_RD1),
-                              .wea(WB_CTL_regwrite), // write enable
-                              .dina(WB_writedata),
-                              
-                              .addrb(IFID_insn[7:4]), // rt (read)
-                              .doutb(ID_RD2));
-//  regfile regfile(.RA1(IFID_insn[11:9]),
-//                  .RA2(IFID_insn[8:6]),
-//                  .RD1(ID_RD1),
-//                  .RD2(ID_RD2),
-//                  .WA(WB_writeaddr),
-//                  .WD(WB_writedata),
-//                  .regwrite(WB_CTL_regwrite));
+                              .ra1(IFID_insn[11:8]), // rs (read) / WA (write)
+                              .ra2(IFID_insn[7:4]), // rt (read)
+                              .rd1(ID_RD1),
+                              .rd2(ID_RD2),
+
+                              .we(WB_CTL_regwrite), // write enable
+                              .wa(WB_writeaddr),
+                              .wd(WB_writedata));
 
   always @ (posedge CLK) begin
     if (RST) begin
@@ -207,17 +197,12 @@ module archel (
 
   wire [15:0] MEM_data;
 
-  data_mem_16x256 data_mem(.clka(CLK),
-                           .rsta(RST),
-                           .addra(EXMEM_aluout),
-                           .douta(MEM_data),
-                           .wea(EXMEM_CTL_MEM_memwrite),
-                           .dina(EXMEM_R2));
-  // data_mem data_mem(.RA(EXMEM_aluout),
-  //                   .read(EXMEM_CTL_MEM_memread),
-  //                   .write(EXMEM_CTL_MEM_memwrite),
-  //                   .WD(EXMEM_R2),
-  //                   .RD(MEM_data));
+  data_mem_16x256 data_mem(.clk(CLK),
+                           .rst(RST),
+                           .rwa(EXMEM_aluout),
+                           .rd(MEM_data),
+                           .we(EXMEM_CTL_MEM_memwrite),
+                           .wd(EXMEM_R2));
 
   always @ (posedge CLK) begin
     if (RST) begin
