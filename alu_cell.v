@@ -21,6 +21,6 @@ module alu_cell (
                .in_3(sum),
                .in_4(less),
                .sel(op),
-               .out(result));]
+               .out(result));
   
 endmodule

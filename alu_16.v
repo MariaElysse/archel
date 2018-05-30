@@ -7,13 +7,13 @@ module alu_16 (
   input  wire [15:0] a,      // input a
   input  wire [15:0] b,      // input b
   output wire [15:0] result, // result
-  output wire ovf,           // overflow
+  output wire ovf          // overflow
   );
   
-  wire a_invert = aluop[4],   // invert a
-  wire b_invert = aluop[3],   // invert b
-  wire ci       = aluop[2],   // carry in
-  wire [1:0] op = aluop[1:0], // operation (and|or|adder|less)
+  wire a_invert = aluop[4];   // invert a
+  wire b_invert = aluop[3];   // invert b
+  wire ci       = aluop[2];   // carry in
+  wire [1:0] op = aluop[1:0]; // operation (and|or|adder|less)
 
   wire c_o0_i1;
   wire c_o1_i2;
@@ -24,7 +24,7 @@ module alu_16 (
   wire c_o6_i7;
   wire c_o7_i8;
   wire c_o8_i9;
-  wire c_o9_i10
+  wire c_o9_i10;
   wire c_o10_i11;
   wire c_o11_i12;
   wire c_o12_i13;

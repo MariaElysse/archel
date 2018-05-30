@@ -3,7 +3,7 @@ module adder (
   input  wire b, // input b
   input  wire ci, // input carry in
   output wire s, // output sum
-  output wire co, // output carry out
+  output wire co // output carry out
   );
 
   assign s = (a^b)^ci;

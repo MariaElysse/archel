@@ -3,8 +3,16 @@ module archel (
   input  wire        PAUSE, // switch input
   input  wire        RST, // button input
   input  wire        STEP, // button input
-  output wire [6:0]  VGA, // VGA output
+  output wire [6:0]  VGA // VGA output
   );
+
+  // ===========================================================================
+  // WB : Writeback
+  // ===========================================================================
+
+  wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
+  wire [2:0]  WB_writeaddr = MEMWB_WA;
+  wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
 
   // ===========================================================================
   // VGA Output
@@ -120,11 +128,11 @@ module archel (
       IDEX_CTL_MEM_memwrite <= 0;
       IDEX_CTL_WB_regwrite <= 0;
       IDEX_CTL_WB_memtoreg <= 0;
-      IDEX_R1; <= 0;
-      IDEX_R2; <= 0;
-      IDEX_sext_imm; <= 0;
-      IDEX_rt; <= 0;
-      IDEX_rd; <= 0;
+      IDEX_R1 <= 0;
+      IDEX_R2 <= 0;
+      IDEX_sext_imm <= 0;
+      IDEX_rt <= 0;
+      IDEX_rd <= 0;
     end
     else if (PAUSE == 0) begin
       IDEX_CTL_EX_alusrc <= ID_alusrc;
@@ -134,11 +142,11 @@ module archel (
       IDEX_CTL_MEM_memwrite <= ID_memwrite;
       IDEX_CTL_WB_regwrite <= ID_regwrite;
       IDEX_CTL_WB_memtoreg <= ID_memtoreg;
-      IDEX_R1; <= ID_RD1;
-      IDEX_R2; <= ID_RD2;
-      IDEX_sext_imm; <= { {10{IFID_insn[5]}}, IFID_insn[5:0] };
-      IDEX_rt; <= IFID_insn[8:6];
-      IDEX_rd; <= IFID_insn[5:3];
+      IDEX_R1 <= ID_RD1;
+      IDEX_R2 <= ID_RD2;
+      IDEX_sext_imm <= { {10{IFID_insn[5]}}, IFID_insn[5:0] };
+      IDEX_rt <= IFID_insn[8:6];
+      IDEX_rd <= IFID_insn[5:3];
     end
   end
 
@@ -219,13 +227,6 @@ module archel (
     end
   end
   
-  // ===========================================================================
-  // WB : Writeback
-  // ===========================================================================
-
-  wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
-  wire [2:0]  WB_writeaddr = MEMWB_WA;
-  wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
 
 
   

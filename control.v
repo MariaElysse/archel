@@ -6,7 +6,7 @@ module control (
   output reg ctl_memread,
   output reg ctl_memwrite,
   output reg ctl_regwrite,
-  output reg ctl_memtoreg,
+  output reg ctl_memtoreg
   );
 
   always @ (*) begin
