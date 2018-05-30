@@ -97,19 +97,17 @@ module archel (
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  register_file_16x8 regfile(.clka(CLK),
-                             .clkb(CLK),
-                             .rsta(RST),
-                             
-                             .ena(1),
-                             .addra(a_addr),
-                             .douta(ID_RD1),
-                             .wea(WB_CTL_regwrite), // write enable
-                             .dina(WB_writedata),
-                             
-                             .enb(1),
-                             .addrb(IFID_insn[8:6]),
-                             .doutb(ID_RD2));
+  register_file_16x256 regfile(.clka(CLK),
+                               .clkb(CLK),
+                               .rsta(RST),
+                               
+                               .addra(a_addr),
+                               .douta(ID_RD1),
+                               .wea(WB_CTL_regwrite), // write enable
+                               .dina(WB_writedata),
+                               
+                               .addrb(IFID_insn[8:6]),
+                               .doutb(ID_RD2));
   
 //  regfile regfile(.RA1(IFID_insn[11:9]),
 //                  .RA2(IFID_insn[8:6]),
