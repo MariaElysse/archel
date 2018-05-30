@@ -24,42 +24,55 @@
 
 module tb_archel;
 
-	// Inputs
-	reg CLK;
-	reg PAUSE;
-	reg RST;
-	reg STEP;
+  // Inputs
+  reg CLK;
+  reg PAUSE;
+  reg RST;
+  reg STEP;
 
-	// Outputs
-	wire [6:0] VGA;
+  // Outputs
+  wire [6:0] VGA;
+  
+  always #5 CLK <= ~CLK;
 
-	// Instantiate the Unit Under Test (UUT)
-	archel uut (
-		.CLK(CLK), 
-		.PAUSE(PAUSE), 
-		.RST(RST), 
-		.STEP(STEP), 
-		.VGA(VGA)
-	);
+  // Instantiate the Unit Under Test (UUT)
+  archel uut (
+    .CLK(CLK), 
+    .PAUSE(PAUSE), 
+    .RST(RST), 
+    .STEP(STEP), 
+    .VGA(VGA)
+  );
 
-	initial begin
-		// Initialize Inputs
-		CLK = 0;
-		PAUSE = 0;
-		RST = 0;
-		STEP = 0;
+  // Loader
+  // reg [15:0] program [0:1023] = {1}; // file: 0 = #ins; 1-1023 = instructions
 
-		// Wait 100 ns for global reset to finish
-		#100;
+  initial begin
+    // Initialize Inputs
+    CLK = 0;
+    PAUSE = 0;
+    RST = 0;
+    STEP = 0;
+
+    // Wait 100 ns for global reset to finish
+    #100;
         
-		// Add stimulus here
-		RST = 1;
-		#10;
-		RST = 0;
-		#10;
+    // Add stimulus here
 
-		
-	end
+    // Reset
+    RST = 1;
+    #10;
+    RST = 0;
+    #10;
+
+    // // Load
+    // $readmemb("intdiv.archel", program);
+    // for (i = 1; i <= program[0]; i = i+1) begin
+    //   tskRunInst(program[i]);
+    // end
+
+    #1000;
+  end
       
 endmodule
 

@@ -5,12 +5,21 @@ module archel (
   input  wire        STEP, // button input
   output wire [6:0]  VGA // VGA output
   );
-
+  
   // ===========================================================================
   // VGA Output
   // ===========================================================================
   
   // vga vga();
+
+  // ===========================================================================
+  // Clock Divider
+  // ===========================================================================
+  
+  wire PCLK;
+  clockdiv clk_div(.clk(CLK),
+                   .rst(RST),
+                   .pclk(PCLK));
 
   // ===========================================================================
   // Step Button Debouncing
@@ -49,14 +58,14 @@ module archel (
                            .ra(PC),
                            .rd(IF_insn));
 
-  always @ (posedge CLK) begin
+  always @ (posedge PCLK) begin
     if (RST) begin
       IFID_insn <= 0;
       PC <= 0;
     end
     else if (PAUSE == 0) begin
       IFID_insn <= IF_insn;
-      PC <= PC + 2;
+      PC <= PC + 1; // insn addressable memory
     end
   end
   
@@ -112,7 +121,7 @@ module archel (
                               .wa(WB_writeaddr),
                               .wd(WB_writedata));
 
-  always @ (posedge CLK) begin
+  always @ (posedge PCLK) begin
     if (RST) begin
       IDEX_CTL_EX_alusrc <= 0;
       IDEX_CTL_EX_aluop <= 0;
@@ -164,7 +173,7 @@ module archel (
              .result(EX_aluout),
              .ovf());
 
-  always @ (posedge CLK) begin
+  always @ (posedge PCLK) begin
     if (RST) begin
       EXMEM_CTL_MEM_memread <= 0;
       EXMEM_CTL_MEM_memwrite <= 0;
@@ -204,7 +213,7 @@ module archel (
                            .we(EXMEM_CTL_MEM_memwrite),
                            .wd(EXMEM_R2));
 
-  always @ (posedge CLK) begin
+  always @ (posedge PCLK) begin
     if (RST) begin
       MEMWB_CTL_WB_regwrite <= 0;
       MEMWB_CTL_WB_memtoreg <= 0;

@@ -1,7 +1,7 @@
 module data_mem_16x256 (
   input  wire        clk, 
   input  wire        rst, 
-  input  wire [3:0]  rwa, 
+  input  wire [7:0]  rwa, 
   output reg  [15:0] rd,
   input  wire        we, 
   input  wire [15:0] wd
@@ -22,5 +22,6 @@ module data_mem_16x256 (
       if (we)
         ram[rwa] <= wd;
       rd <= ram[rwa];
+    end
   end
 endmodule // insn_mem_16x256

@@ -7,3 +7,9 @@ iseconfig/
 *.xst
 xst
 *.gise
+*.exe
+*.wdb
+*.log
+*.cmd
+*.ini
+isim/
