@@ -91,7 +91,7 @@ ENTITY insn_mem_16x256_exdes IS
     RSTA           : IN STD_LOGIC;  --opt port
   
     WEA            : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    ADDRA          : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
+    ADDRA          : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
   
     DINA           : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
   
@@ -119,7 +119,7 @@ ARCHITECTURE xilinx OF insn_mem_16x256_exdes IS
     RSTA       : IN STD_LOGIC;  --opt port
   
     WEA        : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
-    ADDRA      : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
+    ADDRA      : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
   
     DINA       : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
   

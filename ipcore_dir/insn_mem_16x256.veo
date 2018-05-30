@@ -51,7 +51,7 @@ insn_mem_16x256 your_instance_name (
   .clka(clka), // input clka
   .rsta(rsta), // input rsta
   .wea(wea), // input [0 : 0] wea
-  .addra(addra), // input [5 : 0] addra
+  .addra(addra), // input [7 : 0] addra
   .dina(dina), // input [15 : 0] dina
   .douta(douta) // output [15 : 0] douta
 );
