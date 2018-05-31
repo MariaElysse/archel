@@ -1,0 +1,16 @@
+# Output products list for <letters>
+letters/blk_mem_gen_v7_3_readme.txt
+letters/doc/blk_mem_gen_v7_3_vinfo.html
+letters/doc/pg058-blk-mem-gen.pdf
+letters.asy
+letters.gise
+letters.mif
+letters.ngc
+letters.sym
+letters.v
+letters.veo
+letters.xco
+letters.xise
+letters_flist.txt
+letters_xmdf.tcl
+summary.log

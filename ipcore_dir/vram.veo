@@ -52,8 +52,11 @@ vram your_instance_name (
   .wea(wea), // input [0 : 0] wea
   .addra(addra), // input [8 : 0] addra
   .dina(dina), // input [639 : 0] dina
+  .douta(douta), // output [639 : 0] douta
   .clkb(clkb), // input clkb
+  .web(web), // input [0 : 0] web
   .addrb(addrb), // input [8 : 0] addrb
+  .dinb(dinb), // input [639 : 0] dinb
   .doutb(doutb) // output [639 : 0] doutb
 );
 // INST_TAG_END ------ End INSTANTIATION Template ---------

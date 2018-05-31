@@ -9,9 +9,34 @@ module archel (
   // ===========================================================================
   // VGA Output
   // ===========================================================================
+  wire [639:0]   agp_data;
+  wire [8:0]     agp_addr;
+  wire [8:0]     vram_rw_addr;
+  wire [639:0]   vram_read;
+  wire [639:0]   vram_write;
   
-  // vga vga();
-
+  vram vram_( //might also need to be true dual for multi-writes. but i dont want to block rendering ever so it should get its own port
+		.clka(CLK),
+		.wea('b1),
+		.addra(vram_rw_addr),
+		.dina(vram_write),
+		.douta(vram_read),
+		.clkb(CLK),
+		.addrb(agp_addr),
+		.doutb(agp_data),
+		.dinb('b0),
+		//enable writes for b: no, never 
+		//enable writes for a: yes, always
+  );
+//	Todo: 
+//	* Write the word REGISTERS on the screen via the VRAM
+//	-> Write the letters line by line
+//	* Write the register contents on the screen via vram 
+//	-> Write RX._FFFF_ (same length as string REGISTERS)
+//	(concatenation and shifting should b an easy way to do this one)
+// Consider: different data port aspect ratios? how many letters can we draw before the 
+// rendering becomes too slow? If 1/10 of a letter takes 1/100mhz (10 clocks per letter)
+//and the screen is redrawn every 1/60hz how many letters can we draw? THOUSANDS. So it should be fine to do it slowly
   // ===========================================================================
   // Clock Divider
   // ===========================================================================
