@@ -36,9 +36,18 @@ module archel (
                       .btn_up(step_btn_up));
 
   // ===========================================================================
-  // WB : Writeback (Declarations)
+  // Forward Declarations
   // ===========================================================================
   
+  // ID : Instruction Decode / Register Fetch
+
+  wire       ID_RD1_zero;
+  wire       ID_brop;
+  wire       ID_branch = ID_RD1_zero & ID_brop;
+  wire [7:0] ID_braddr;
+
+  // WB : Writeback
+
   wire        WB_CTL_regwrite = MEMWB_CTL_WB_regwrite;
   wire [3:0]  WB_writeaddr = MEMWB_WA;
   wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_WD_mem : MEMWB_WD_reg;
@@ -65,7 +74,7 @@ module archel (
     end
     else if (PAUSE == 0) begin
       IFID_insn <= IF_insn;
-      PC <= PC + 1; // insn addressable memory
+      PC <= ID_branch ? ID_braddr : PC + 1; // mem is insn addressable
     end
   end
   
@@ -93,6 +102,7 @@ module archel (
   wire       ID_memwrite;
   wire       ID_regwrite;
   wire       ID_memtoreg;
+  assign     ID_braddr = IFID_insn[7:0];
 
   control control(.opcode(IFID_insn[15:12]),
                   .ctl_alusrc(ID_alusrc),
@@ -101,10 +111,12 @@ module archel (
                   .ctl_memread(ID_memread),
                   .ctl_memwrite(ID_memwrite),
                   .ctl_regwrite(ID_regwrite),
-                  .ctl_memtoreg(ID_memtoreg));
+                  .ctl_memtoreg(ID_memtoreg),
+                  .ctl_brop(ID_brop));
 
   wire [15:0] ID_RD1;
   wire [15:0] ID_RD2;
+  assign ID_RD1_zero = ~(|ID_RD1);
   
   // DO NOT read and write in the same cycle
   // a: read_1 and write

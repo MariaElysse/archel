@@ -13,3 +13,7 @@ xst
 *.cmd
 *.ini
 isim/
+*.sublime-workspace
+*.wcfg
+# ipcore_dir*
+# !ipcore_dir/*.v
