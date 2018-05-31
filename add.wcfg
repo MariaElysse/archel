@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/Mike/Dropbox/UCLA Courses/CS M152A/archel/tb_archel_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_archel" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="16" />
+   <wvobject fp_name="/tb_archel/CLK" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/PCLK" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">PCLK</obj_property>
+      <obj_property name="ObjectShortName">PCLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/PAUSE" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">PAUSE</obj_property>
+      <obj_property name="ObjectShortName">PAUSE</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/RST" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">RST</obj_property>
+      <obj_property name="ObjectShortName">RST</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/STEP" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">STEP</obj_property>
+      <obj_property name="ObjectShortName">STEP</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/debouncer/db_counter" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">db_counter[63:0]</obj_property>
+      <obj_property name="ObjectShortName">db_counter[63:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/step_btn_state" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">step_btn_state</obj_property>
+      <obj_property name="ObjectShortName">step_btn_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/step_btn_down" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">step_btn_down</obj_property>
+      <obj_property name="ObjectShortName">step_btn_down</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/step_btn_up" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">step_btn_up</obj_property>
+      <obj_property name="ObjectShortName">step_btn_up</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/PC" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">PC[7:0]</obj_property>
+      <obj_property name="ObjectShortName">PC[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/IFID_insn" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">IFID_insn[15:0]</obj_property>
+      <obj_property name="ObjectShortName">IFID_insn[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/regfile/ram" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ram[0:15,15:0]</obj_property>
+      <obj_property name="ObjectShortName">ram[0:15,15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/ID_RD1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ID_RD1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_RD1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/ID_RD2" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">ID_RD2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">ID_RD2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/IDEX_R1" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">IDEX_R1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">IDEX_R1[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_archel/uut/EX_alub" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">EX_alub[15:0]</obj_property>
+      <obj_property name="ObjectShortName">EX_alub[15:0]</obj_property>
+   </wvobject>
+</wave_config>

@@ -55,6 +55,7 @@ module archel (
   wire step_btn_up;
   
   debouncer debouncer(.clk(CLK),
+                      .rst(RST),
                       .btn(STEP),
                       .btn_state(step_btn_state),
                       .btn_down(step_btn_down),
@@ -88,7 +89,7 @@ module archel (
       IFID_insn <= 0;
       PC <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       IFID_insn <= IF_insn;
       PC <= PC + 1; // insn addressable memory
     end
@@ -161,7 +162,7 @@ module archel (
       IDEX_rs <= 0;
       IDEX_rd <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       IDEX_CTL_EX_alusrc <= ID_alusrc;
       IDEX_CTL_EX_aluop <= ID_aluop;
       IDEX_CTL_EX_regdst <= ID_regdst;
@@ -208,7 +209,7 @@ module archel (
       EXMEM_R2 <= 0;
       EXMEM_WA <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       EXMEM_CTL_MEM_memread <= IDEX_CTL_MEM_memread;
       EXMEM_CTL_MEM_memwrite <= IDEX_CTL_MEM_memwrite;
       EXMEM_CTL_WB_regwrite <= IDEX_CTL_WB_regwrite;
@@ -246,7 +247,7 @@ module archel (
       MEMWB_WD_reg <= 0;
       MEMWB_WA <= 0;
     end
-    if (PAUSE == 0) begin
+    if (~PAUSE || (PAUSE & step_btn_down)) begin
       MEMWB_CTL_WB_regwrite <= EXMEM_CTL_WB_regwrite;
       MEMWB_CTL_WB_memtoreg <= EXMEM_CTL_WB_memtoreg;
       MEMWB_WD_mem <= MEM_data;
