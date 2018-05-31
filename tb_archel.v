@@ -70,6 +70,37 @@ module tb_archel;
     // for (i = 1; i <= program[0]; i = i+1) begin
     //   tskRunInst(program[i]);
     // end
+    #70;
+    PAUSE = 1;
+    #100;
+
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #1500;
+
+    STEP = 0;
+    #500;
+
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #1500;
+
+    STEP = 0;
+    PAUSE = 0;
 
     #1000;
   end

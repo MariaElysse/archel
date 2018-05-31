@@ -9,9 +9,34 @@ module archel (
   // ===========================================================================
   // VGA Output
   // ===========================================================================
+  wire [639:0]   agp_data;
+  wire [8:0]     agp_addr;
+  wire [8:0]     vram_rw_addr;
+  wire [639:0]   vram_read;
+  wire [639:0]   vram_write;
   
-  // vga vga();
-
+  vram vram_( //might also need to be true dual for multi-writes. but i dont want to block rendering ever so it should get its own port
+		.clka(CLK),
+		.wea('b1),
+		.addra(vram_rw_addr),
+		.dina(vram_write),
+		.douta(vram_read),
+		.clkb(CLK),
+		.addrb(agp_addr),
+		.doutb(agp_data),
+		.dinb('b0),
+		//enable writes for b: no, never 
+		//enable writes for a: yes, always
+  );
+//	Todo: 
+//	* Write the word REGISTERS on the screen via the VRAM
+//	-> Write the letters line by line
+//	* Write the register contents on the screen via vram 
+//	-> Write RX._FFFF_ (same length as string REGISTERS)
+//	(concatenation and shifting should b an easy way to do this one)
+// Consider: different data port aspect ratios? how many letters can we draw before the 
+// rendering becomes too slow? If 1/10 of a letter takes 1/100mhz (10 clocks per letter)
+//and the screen is redrawn every 1/60hz how many letters can we draw? THOUSANDS. So it should be fine to do it slowly
   // ===========================================================================
   // Clock Divider
   // ===========================================================================
@@ -30,6 +55,7 @@ module archel (
   wire step_btn_up;
   
   debouncer debouncer(.clk(CLK),
+                      .rst(RST),
                       .btn(STEP),
                       .btn_state(step_btn_state),
                       .btn_down(step_btn_down),
@@ -72,7 +98,7 @@ module archel (
       IFID_insn <= 0;
       PC <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       IFID_insn <= IF_insn;
       PC <= ID_branch ? ID_braddr : PC + 1; // mem is insn addressable
     end
@@ -148,7 +174,7 @@ module archel (
       IDEX_rs <= 0;
       IDEX_rd <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       IDEX_CTL_EX_alusrc <= ID_alusrc;
       IDEX_CTL_EX_aluop <= ID_aluop;
       IDEX_CTL_EX_regdst <= ID_regdst;
@@ -195,7 +221,7 @@ module archel (
       EXMEM_R2 <= 0;
       EXMEM_WA <= 0;
     end
-    else if (PAUSE == 0) begin
+    else if (~PAUSE || (PAUSE & step_btn_down)) begin
       EXMEM_CTL_MEM_memread <= IDEX_CTL_MEM_memread;
       EXMEM_CTL_MEM_memwrite <= IDEX_CTL_MEM_memwrite;
       EXMEM_CTL_WB_regwrite <= IDEX_CTL_WB_regwrite;
@@ -233,7 +259,7 @@ module archel (
       MEMWB_WD_reg <= 0;
       MEMWB_WA <= 0;
     end
-    if (PAUSE == 0) begin
+    if (~PAUSE || (PAUSE & step_btn_down)) begin
       MEMWB_CTL_WB_regwrite <= EXMEM_CTL_WB_regwrite;
       MEMWB_CTL_WB_memtoreg <= EXMEM_CTL_WB_memtoreg;
       MEMWB_WD_mem <= MEM_data;

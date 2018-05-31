@@ -41,8 +41,11 @@ module vram(
   wea,
   addra,
   dina,
+  douta,
   clkb,
+  web,
   addrb,
+  dinb,
   doutb
 );
 
@@ -50,8 +53,11 @@ input clka;
 input [0 : 0] wea;
 input [8 : 0] addra;
 input [639 : 0] dina;
+output [639 : 0] douta;
 input clkb;
+input [0 : 0] web;
 input [8 : 0] addrb;
+input [639 : 0] dinb;
 output [639 : 0] doutb;
 
 // synthesis translate_off
@@ -85,12 +91,12 @@ output [639 : 0] doutb;
     .C_HAS_SOFTECC_INPUT_REGS_A(0),
     .C_HAS_SOFTECC_OUTPUT_REGS_B(0),
     .C_INIT_FILE("BlankString"),
-    .C_INIT_FILE_NAME("no_coe_file_loaded"),
+    .C_INIT_FILE_NAME("vram.mif"),
     .C_INITA_VAL("0"),
     .C_INITB_VAL("0"),
     .C_INTERFACE_TYPE(0),
-    .C_LOAD_INIT_FILE(0),
-    .C_MEM_TYPE(1),
+    .C_LOAD_INIT_FILE(1),
+    .C_MEM_TYPE(2),
     .C_MUX_PIPELINE_STAGES(0),
     .C_PRIM_TYPE(1),
     .C_READ_DEPTH_A(480),
@@ -124,18 +130,18 @@ output [639 : 0] doutb;
     .WEA(wea),
     .ADDRA(addra),
     .DINA(dina),
+    .DOUTA(douta),
     .CLKB(clkb),
+    .WEB(web),
     .ADDRB(addrb),
+    .DINB(dinb),
     .DOUTB(doutb),
     .RSTA(),
     .ENA(),
     .REGCEA(),
-    .DOUTA(),
     .RSTB(),
     .ENB(),
     .REGCEB(),
-    .WEB(),
-    .DINB(),
     .INJECTSBITERR(),
     .INJECTDBITERR(),
     .SBITERR(),

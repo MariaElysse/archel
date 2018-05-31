@@ -8,5 +8,29 @@
 <msg type="info" file="sim" num="172" delta="old" >Generating IP...
 </msg>
 
+<msg type="warning" file="sim" num="0" delta="new" ><arg fmt="%s" index="1">A core named &apos;vram&apos; already exists in the project. Output products for this core may be overwritten.</arg>
+</msg>
+
+<msg type="info" file="sim" num="0" delta="new" ><arg fmt="%s" index="1">Pre-processing HDL files for &apos;vram&apos;...</arg>
+</msg>
+
+<msg type="warning" file="sim" num="0" delta="new" ><arg fmt="%s" index="1">Overwriting existing file /media/maria/F481-40DD/NERP_demo/ipcore_dir/tmp/_cg/vram/doc/blk_mem_gen_v7_3_vinfo.html with file from view xilinx_documentation</arg>
+</msg>
+
+<msg type="info" file="sim" num="949" delta="old" >Finished generation of ASY schematic symbol.
+</msg>
+
+<msg type="error" file="coreutil" num="1012" delta="new" >Command &apos;<arg fmt="%s" index="1">/opt/Xilinx/14.7/ISE_DS/ISE/bin/lin64/unwrapped/xtclsh &quot;/opt/Xilinx/14.7/ISE_DS/ISE/coregen/tcl/core2ise.tcl&quot; &quot;./tmp/_cg/&quot; &quot;vram&quot; </arg>&apos; returned a non-zero exit code &apos;<arg fmt="%x" index="2">1</arg>&apos;
+</msg>
+
+<msg type="warning" file="sim" num="968" delta="new" >ISE project &apos;<arg fmt="%s" index="1">./tmp/_cg/vram.xise</arg>&apos; will not be released.
+</msg>
+
+<msg type="warning" file="sim" num="0" delta="new" >ISE file could not be generated.
+</msg>
+
+<msg type="info" file="sim" num="948" delta="old" >Finished FLIST file generation.
+</msg>
+
 </messages>
 

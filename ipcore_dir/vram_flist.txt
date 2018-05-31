@@ -5,6 +5,7 @@ vram/doc/blk_mem_gen_v7_3_vinfo.html
 vram/doc/pg058-blk-mem-gen.pdf
 vram.asy
 vram.gise
+vram.mif
 vram.ngc
 vram.sym
 vram.v
