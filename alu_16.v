@@ -52,7 +52,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o1_i2));
   alu_cell cell_2(.ci(c_o1_i2),
                   .a(a[2]),
@@ -61,7 +61,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o2_i3));
   alu_cell cell_3(.ci(c_o2_i3),
                   .a(a[3]),
@@ -70,7 +70,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o3_i4));
   alu_cell cell_4(.ci(c_o3_i4),
                   .a(a[4]),
@@ -79,7 +79,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o4_i5));
   alu_cell cell_5(.ci(c_o4_i5),
                   .a(a[5]),
@@ -88,7 +88,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o5_i6));
   alu_cell cell_6(.ci(c_o5_i6),
                   .a(a[6]),
@@ -97,7 +97,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o6_i7));
   alu_cell cell_7(.ci(c_o6_i7),
                   .a(a[7]),
@@ -106,7 +106,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o7_i8));
   alu_cell cell_8(.ci(c_o7_i8),
                   .a(a[8]),
@@ -115,7 +115,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o8_i9));
   alu_cell cell_9(.ci(c_o8_i9),
                   .a(a[9]),
@@ -124,7 +124,7 @@ module alu_16 (
                   .a_invert(a_invert),
                   .b_invert(b_invert),
                   .op(op),
-                  .less(0),
+                  .less(1'b0),
                   .co(c_o9_i10));
   alu_cell cell_10(.ci(c_o9_i10),
                    .a(a[10]),
@@ -133,7 +133,7 @@ module alu_16 (
                    .a_invert(a_invert),
                    .b_invert(b_invert),
                    .op(op),
-                   .less(0),
+                   .less(1'b0),
                    .co(c_o10_i11));
   alu_cell cell_11(.ci(c_o10_i11),
                    .a(a[11]),
@@ -142,7 +142,7 @@ module alu_16 (
                    .a_invert(a_invert),
                    .b_invert(b_invert),
                    .op(op),
-                   .less(0),
+                   .less(1'b0),
                    .co(c_o11_i12));
   alu_cell cell_12(.ci(c_o11_i12),
                    .a(a[12]),
@@ -151,7 +151,7 @@ module alu_16 (
                    .a_invert(a_invert),
                    .b_invert(b_invert),
                    .op(op),
-                   .less(0),
+                   .less(1'b0),
                    .co(c_o12_i13));
   alu_cell cell_13(.ci(c_o12_i13),
                    .a(a[13]),
@@ -160,7 +160,7 @@ module alu_16 (
                    .a_invert(a_invert),
                    .b_invert(b_invert),
                    .op(op),
-                   .less(0),
+                   .less(1'b0),
                    .co(c_o13_i14));
   alu_cell cell_14(.ci(c_o13_i14),
                    .a(a[14]),
@@ -169,7 +169,7 @@ module alu_16 (
                    .a_invert(a_invert),
                    .b_invert(b_invert),
                    .op(op),
-                   .less(0),
+                   .less(1'b0),
                    .co(c_o14_i15));
   alu_cell_last cell_15(.ci(c_o14_i15),
                         .a(a[15]),
@@ -178,7 +178,7 @@ module alu_16 (
                         .a_invert(a_invert),
                         .b_invert(b_invert),
                         .op(op),
-                        .less(0),
+                        .less(1'b0),
                         .co(c_o15),
                         .set(set));
 endmodule
