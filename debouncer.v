@@ -9,7 +9,7 @@ module debouncer(
   output wire btn_up // pulse 1cy
   );
   
-  reg [5:0] db_counter;
+  reg [23:0] db_counter;
   
   always @ (posedge clk) begin
     if (rst) begin
