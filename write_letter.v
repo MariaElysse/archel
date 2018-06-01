@@ -18,6 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+// consider: clocking weirdness (might have to @ posedge clock as well and have turn be 2 clocks long
 module write_letter(
 	input wire clk,
 	input wire [5:0] let, //which letter (0-38)
@@ -29,7 +30,7 @@ module write_letter(
 	input wire vram_turn, //is it our turn to r/w from the vram?
 	output wire[8:0] line_addr, //output: which line are we reading from vram
 	output reg activate_write, //output: are we writing to the vram?
-	
+	output wire [639:0] line_to_vram,
 	output wire let_done //output: are we done writing this letter to the vram?
     );
 
@@ -37,10 +38,10 @@ reg  [639:0] updated_line;
 reg  [639:0] line_mask;
 reg  [3:0] let_line = 0; 
 wire [8:0] let_addr;
-wire [6:0]let_data ;
-
+wire [6:0] let_data ;
+assign line_to_vram = updated_line; //idk why this isnt just a register output
 assign line_addr = y_pos;
-assign let_done = let_line > 9; 
+assign let_done = let_line > 9; //consider changing to > 10
 assign let_addr = let + let_line * 39; //which specific letter line we want
 
 letters lets_(
