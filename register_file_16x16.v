@@ -1,16 +1,16 @@
+/** Dual-port RAM */
 module register_file_16x16 (
   input  wire        clk, 
   input  wire        rst, 
-  input  wire [3:0]  ra1, 
-  input  wire [3:0]  ra2, 
-  output reg  [15:0] rd1, 
-  output reg  [15:0] rd2, 
-  input  wire        we, 
-  input  wire [3:0]  wa, 
+  input  wire [3:0]  a1,
+  input  wire [3:0]  a2,
+  output wire [15:0] rd1,
+  output wire [15:0] rd2,
+  input  wire        we,
   input  wire [15:0] wd
   );
   
-  reg [15:0] ram [0:15];
+  reg [15:0] ram [15:0];
 
   always @ (posedge clk) begin
     if (rst) begin
@@ -30,14 +30,14 @@ module register_file_16x16 (
       ram[2] <= 16'h0000;
       ram[1] <= 16'h0000;
       ram[0] <= 16'h0000;
-      rd1 <= 16'h0000;
-      rd2 <= 16'h0000;
     end // if (rst)
     else begin
       if (we)
-        ram[wa] <= wd;
-      rd1 <= ram[ra1];
-      rd2 <= ram[ra2];
+        ram[a1] <= wd;
     end // else
   end
+
+  assign rd1 = ram[a1];
+  assign rd2 = ram[a2];
+
 endmodule // register_file_16x16
