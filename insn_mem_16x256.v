@@ -1,8 +1,8 @@
 /** Single-port ROM */
 module insn_mem_16x256 (
-  input  wire        clk, 
-  input  wire        rst, 
-  input  wire [7:0]  a, 
+  // input  wire        clk, 
+  // input  wire        rst, 
+  input  wire [7:0]  ra, 
   output wire [15:0] rd
   );
 
@@ -12,6 +12,6 @@ module insn_mem_16x256 (
     $readmemb("program.archel", ram, 0, 255);
   end // initial
 
-  assign rd = ram[a];
+  assign rd = ram[ra];
 
 endmodule // insn_mem_16x256

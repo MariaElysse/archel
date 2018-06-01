@@ -2,8 +2,8 @@
 module register_file_16x16 (
   input  wire        clk, 
   input  wire        rst, 
-  input  wire [3:0]  a1,
-  input  wire [3:0]  a2,
+  input  wire [3:0]  rwa1,
+  input  wire [3:0]  ra2,
   output wire [15:0] rd1,
   output wire [15:0] rd2,
   input  wire        we,
@@ -33,11 +33,11 @@ module register_file_16x16 (
     end // if (rst)
     else begin
       if (we)
-        ram[a1] <= wd;
+        ram[rwa1] <= wd;
     end // else
   end
 
-  assign rd1 = ram[a1];
-  assign rd2 = ram[a2];
+  assign rd1 = ram[rwa1];
+  assign rd2 = ram[ra2];
 
 endmodule // register_file_16x16

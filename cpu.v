@@ -73,9 +73,7 @@ module cpu (
   wire [15:0] IF_insn;
 
   // insn_mem insn_mem(.addr(PC), .data(IF_insn));
-  insn_mem_16x256 insn_mem(.clk(CLK),
-                           .rst(RST),
-                           .ra(PC),
+  insn_mem_16x256 insn_mem(.ra(PC),
                            .rd(IF_insn));
 
   always @ (posedge PCLK) begin
@@ -132,16 +130,16 @@ module cpu (
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  register_file_16x16 regfile(.clk(CLK),
+  wire [3:0] ID_A1 = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
+  register_file_16x16 regfile(.clk(PCLK),
                               .rst(RST),
                               
-                              .ra1(IFID_insn[11:8]), // rs (read) / WA (write)
+                              .rwa1(ID_A1), // rs (read) / WA (write)
                               .ra2(IFID_insn[7:4]), // rt (read)
                               .rd1(ID_RD1),
                               .rd2(ID_RD2),
 
                               .we(WB_CTL_regwrite), // write enable
-                              .wa(WB_writeaddr),
                               .wd(WB_writedata));
 
   always @ (posedge PCLK) begin
@@ -230,7 +228,6 @@ module cpu (
   wire [15:0] MEM_data;
 
   data_mem_16x256 data_mem(.clk(CLK),
-                           .rst(RST),
                            .rwa(EXMEM_aluout),
                            .rd(MEM_data),
                            .we(EXMEM_CTL_MEM_memwrite),
