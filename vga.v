@@ -44,7 +44,7 @@ parameter vpulse = 2;
 parameter h_backporch = 144; 
 parameter h_frntporch = 784;
 
-parameter v_backporch = 31;
+parameter v_backporch = 31; //maybe this is 35, change if it's off the screen at the top or bottom
 parameter v_frntporch = 511; 
 
 //vram 
@@ -52,11 +52,15 @@ parameter v_frntporch = 511;
 reg [9:0] horiz_px;
 reg [9:0] verti_ln;
 reg [18:0] px;
+wire [9:0] actual_x; 
+wire [9:0] actual_y; 
 
+assign actual_x = (verti_ln >= v_backporch)? (verti_ln-v_backporch) : -1;
+assign actual_y = (horiz_px >= h_backporch)? (horiz_px-h_backporch) : -1;
 //sync pulses 
 assign hsync = (horiz_px < hpulse)? 0:1;
 assign vsync = (verti_ln < vpulse)? 0:1;
-assign vram_read_addr = verti_ln;
+assign vram_read_addr = verti_ln+v_backporch;
 //access to the ram
 
 always @(posedge dclk, posedge rst) begin 
@@ -66,24 +70,36 @@ if (rst) begin
 	px <= 0;
 end //(clr)
 else begin
+	if (horiz_px < hpixels - 1) begin 
+		horiz_px <= horiz_px + 1;
+	end
+	else begin
+		horiz_px <= 0;
+		if (verti_ln < vlines - 1) begin
+			verti_ln <= verti_ln + 1;
+		end
+		else begin 
+			verti_ln <= 0;
+		end
+	end
 	if (
-		verti_ln >= v_backporch && verti_ln < v_frntporch &&
-		horiz_px >= h_backporch && horiz_px < h_frntporch
+		actual_x != -1 && actual_x <= 640 &&
+		actual_y != -1 && actual_y <= 480
 	) begin 
-		red = 3'b000;
-		blu = 2'b00;
-		if (line[horiz_px-1] == 1'b1) begin 
-			grn = 3'b111;
+		red <= 3'b000;
+		blu <= 2'b00;
+		if (line[actual_x-1] == 1'b1) begin 
+			grn <= 3'b111;
 		end 
 		else begin 
-			grn = 3'b000;
+			grn <= 3'b000;
 		end;
 	end
 	else begin  //outside the display range
-		red = 3'b000;
-		grn = 3'b000;
-		blu = 2'b00;
-	end 	
+		red <= 3'b000;
+		grn <= 3'b000;
+		blu <= 2'b00;
+	end
 end //else clr
 end //always
 endmodule
