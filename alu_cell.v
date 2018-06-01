@@ -16,11 +16,11 @@ module alu_cell (
 
   adder adder(.a(ainv), .b(binv), .ci(ci), .s(sum), .co(co));
 
-  mux_1_4 mux(.in_1(ainv & binv),
-               .in_2(ainv | binv),
-               .in_3(sum),
-               .in_4(less),
-               .sel(op),
-               .out(result));
+  mux_1_4 mux(.in_a(ainv & binv),
+              .in_b(ainv | binv),
+              .in_c(sum),
+              .in_d(less),
+              .sel(op),
+              .out(result));
   
 endmodule
