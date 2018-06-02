@@ -133,9 +133,6 @@ module cpu (
   wire [15:0] ID_RD1;
   wire [15:0] ID_RD2;
   
-  // DO NOT read and write in the same cycle
-  // a: read_1 and write
-  // b: read_2
   reg ID_writewindow;
   always @ (posedge CLK) begin
     if (advance_pipeline) ID_writewindow <= 1;
