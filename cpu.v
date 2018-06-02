@@ -108,8 +108,8 @@ module cpu (
   
   // Control
 
-  wire       ID_alusrc_a;
-  wire       ID_alusrc_b;
+  wire       ID_alusrc;
+  wire       ID_memsrc;
   wire [4:0] ID_aluop;
   wire       ID_regdst;
   wire       ID_memwrite;
@@ -118,8 +118,8 @@ module cpu (
   wire       ID_brop;
 
   control control(.opcode(IFID_insn[15:12]),
-                  .ctl_alusrc_a(ID_alusrc_a),
-                  .ctl_alusrc_b(ID_alusrc_b),
+                  .ctl_alusrc(ID_alusrc),
+                  .ctl_memsrc(ID_memsrc),
                   .ctl_aluop(ID_aluop),
                   .ctl_regdst(ID_regdst),
                   .ctl_memwrite(ID_memwrite),
@@ -158,8 +158,8 @@ module cpu (
 
   // ID/EX
 
-  reg        IDEX_CTL_EX_alusrc_a;
-  reg        IDEX_CTL_EX_alusrc_b;
+  reg        IDEX_CTL_EX_alusrc;
+  reg        IDEX_CTL_EX_memsrc;
   reg [4:0]  IDEX_CTL_EX_aluop;
   reg        IDEX_CTL_EX_regdst;
   reg        IDEX_CTL_MEM_memwrite;
@@ -167,14 +167,15 @@ module cpu (
   reg        IDEX_CTL_WB_memtoreg;
   reg [15:0] IDEX_RD1;
   reg [15:0] IDEX_RD2;
-  reg [15:0] IDEX_sext_imm;
+  // reg [15:0] IDEX_sext_imm;
+  reg [7:0]  IDEX_imm;
   reg [3:0]  IDEX_rs; // R dest for I-type insns
   reg [3:0]  IDEX_rd; // R dest for R-type insns
 
   always @ (posedge advance_pipeline or posedge RST) begin
     if (RST) begin
-      IDEX_CTL_EX_alusrc_a <= 0;
-      IDEX_CTL_EX_alusrc_b <= 0;
+      IDEX_CTL_EX_alusrc <= 0;
+      IDEX_CTL_EX_memsrc <= 0;
       IDEX_CTL_EX_aluop <= 0;
       IDEX_CTL_EX_regdst <= 0;
       IDEX_CTL_MEM_memwrite <= 0;
@@ -182,13 +183,14 @@ module cpu (
       IDEX_CTL_WB_memtoreg <= 0;
       IDEX_RD1 <= 0;
       IDEX_RD2 <= 0;
-      IDEX_sext_imm <= 0;
+      // IDEX_sext_imm <= 0;
+      IDEX_imm <= 0;
       IDEX_rs <= 0;
       IDEX_rd <= 0;
     end
     else begin
-      IDEX_CTL_EX_alusrc_a <= ID_alusrc_a;
-      IDEX_CTL_EX_alusrc_b <= ID_alusrc_b;
+      IDEX_CTL_EX_alusrc <= ID_alusrc;
+      IDEX_CTL_EX_memsrc <= ID_memsrc;
       IDEX_CTL_EX_aluop <= ID_aluop;
       IDEX_CTL_EX_regdst <= ID_regdst;
       IDEX_CTL_MEM_memwrite <= ID_memwrite;
@@ -196,7 +198,8 @@ module cpu (
       IDEX_CTL_WB_memtoreg <= ID_memtoreg;
       IDEX_RD1 <= ID_RD1;
       IDEX_RD2 <= ID_RD2;
-      IDEX_sext_imm <= { {8{IFID_insn[7]}}, IFID_insn[7:0] };
+      // IDEX_sext_imm <= { {8{IFID_insn[7]}}, IFID_insn[7:0] };
+      IDEX_imm <= IFID_insn[7:0];
       IDEX_rs <= IFID_insn[11:8];
       IDEX_rd <= IFID_insn[3:0];
     end
@@ -206,12 +209,13 @@ module cpu (
   // EX : Execution
   // ===========================================================================
   
-  wire [15:0] EX_aluin_a = IDEX_CTL_EX_alusrc_a == 0 ? IDEX_RD1 : 16'h0000;
-  wire [15:0] EX_aluin_b = IDEX_CTL_EX_alusrc_b == 0 ? IDEX_RD2 : IDEX_sext_imm;
+  // wire [15:0] EX_aluin_a = IDEX_CTL_EX_alusrc_a == 0 ? IDEX_RD1 : 16'h0000;
+  wire [15:0] EX_sext_imm = { {8{IDEX_imm[7]}}, IDEX_imm[7:0] };
+  wire [15:0] EX_aluin_b = IDEX_CTL_EX_alusrc == 0 ? IDEX_RD2 : EX_sext_imm;
   wire [15:0] EX_aluout;
 
   alu_16 alu(.aluop(IDEX_CTL_EX_aluop),
-             .a(EX_aluin_a),
+             .a(IDEX_RD1),
              .b(EX_aluin_b),
              .result(EX_aluout),
              .ovf());
@@ -222,6 +226,7 @@ module cpu (
   reg        EXMEM_CTL_WB_regwrite;
   reg        EXMEM_CTL_WB_memtoreg;
   reg [15:0] EXMEM_aluout;
+  reg [15:0] EXMEM_mem_wd;
   reg [7:0]  EXMEM_mem_rwa;
   reg [15:0] EXMEM_reg_wa;
 
@@ -231,6 +236,7 @@ module cpu (
       EXMEM_CTL_WB_regwrite <= 0;
       EXMEM_CTL_WB_memtoreg <= 0;
       EXMEM_aluout <= 0;
+      EXMEM_mem_wd <= 0;
       EXMEM_mem_rwa <= 0;
       EXMEM_reg_wa <= 0;
     end
@@ -239,7 +245,8 @@ module cpu (
       EXMEM_CTL_WB_regwrite <= IDEX_CTL_WB_regwrite;
       EXMEM_CTL_WB_memtoreg <= IDEX_CTL_WB_memtoreg;
       EXMEM_aluout <= EX_aluout;
-      EXMEM_mem_rwa <= IDEX_RD1[7:0];
+      EXMEM_mem_wd <= IDEX_RD1;
+      EXMEM_mem_rwa <= IDEX_CTL_EX_memsrc ? IDEX_imm : IDEX_RD2;
       EXMEM_reg_wa <= IDEX_CTL_EX_regdst ? IDEX_rd : IDEX_rs;
     end
   end
@@ -255,7 +262,7 @@ module cpu (
                            .rwa(EXMEM_mem_rwa),
                            .rd(MEM_data),
                            .we(MEM_memwrite),
-                           .wd(EXMEM_aluout));
+                           .wd(EXMEM_mem_wd));
 
   // MEM/WB
 
