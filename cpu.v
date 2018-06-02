@@ -65,7 +65,7 @@ module cpu (
   
   // ID : Instruction Decode / Register Fetch
 
-  wire       ID_branch = ID_RD1_nonzero & ID_brop;
+  wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
   wire [7:0] ID_braddr;
 
   // WB : Writeback
@@ -79,7 +79,7 @@ module cpu (
   // ===========================================================================
   
   // (Forward declared)
-  // wire       ID_branch = ID_RD1_nonzero & ID_brop;
+  // wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
   // wire [7:0] ID_braddr;
 
   reg [7:0] PC = 8'b00000000;
@@ -120,7 +120,8 @@ module cpu (
   wire       ID_memwrite;
   wire       ID_regwrite;
   wire       ID_memtoreg;
-  wire       ID_brop;
+  wire       ID_bez;
+  wire       ID_bnz;
 
   control control(.opcode(IFID_insn[15:12]),
                   .ctl_alusrc(ID_alusrc),
@@ -130,7 +131,8 @@ module cpu (
                   .ctl_memwrite(ID_memwrite),
                   .ctl_regwrite(ID_regwrite),
                   .ctl_memtoreg(ID_memtoreg),
-                  .ctl_brop(ID_brop));
+                  .ctl_bez(ID_bez),
+                  .ctl_bnz(ID_bnz));
 
   // Register file access
 
@@ -160,9 +162,9 @@ module cpu (
 
   // Branch logic
 
-  wire ID_RD1_nonzero = (|ID_RD1);
+  wire ID_RD1_zero = ~(|ID_RD1);
   // (Forward declared)
-  // wire       ID_branch = ID_RD1_nonzero & ID_brop;
+  // wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
   // wire [7:0] ID_braddr;
   assign ID_braddr = IFID_insn[7:0];
 
