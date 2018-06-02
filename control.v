@@ -7,8 +7,7 @@ module control (
   output reg        ctl_memwrite,
   output reg        ctl_regwrite,
   output reg        ctl_memtoreg,
-  output reg        ctl_bez,
-  output reg        ctl_bnz
+  output reg  [2:0] ctl_brop
   );
 
   always @ (*) begin
@@ -21,8 +20,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b0;
         ctl_memtoreg <= 1'bx;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0001 : begin // ADD
         ctl_alusrc <=   1'b0;
@@ -32,8 +30,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0010 : begin // ADDI
         ctl_alusrc <=   1'b1;
@@ -43,8 +40,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0011 : begin // SUB
         ctl_alusrc <=   1'b0;
@@ -54,8 +50,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0100 : begin // AND
         ctl_alusrc <=   1'b0;
@@ -65,8 +60,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0101 : begin // OR
         ctl_alusrc <=   1'b0;
@@ -76,8 +70,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b0110 : begin // SLT
         ctl_alusrc <=   1'b0;
@@ -87,8 +80,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b0;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b1000 : begin // LW
         ctl_alusrc <=   1'bx;
@@ -98,8 +90,7 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b1;
         ctl_memtoreg <= 1'b1;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b1001 : begin // SW
         ctl_alusrc <=   1'bx;
@@ -109,8 +100,7 @@ module control (
         ctl_memwrite <= 1'b1;
         ctl_regwrite <= 1'b0;
         ctl_memtoreg <= 1'bx;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
       4'b1010 : begin // SWI
         ctl_alusrc <=   1'bx;
@@ -120,10 +110,9 @@ module control (
         ctl_memwrite <= 1'b1;
         ctl_regwrite <= 1'b0;
         ctl_memtoreg <= 1'bx;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b000;
       end
-      4'b1100 : begin // BEZ
+      4'b1100 : begin // BEZI
         ctl_alusrc <=   1'bx;
         ctl_memsrc <=   1'bx;
         ctl_aluop <=    5'bxxxxx;
@@ -131,10 +120,9 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b0;
         ctl_memtoreg <= 1'bx;
-        ctl_bez <=      1'b1;
-        ctl_bnz <=      1'b0;
+        ctl_brop <=     3'b100;
       end
-      4'b1101 : begin // BNZ
+      4'b1101 : begin // BNZI
         ctl_alusrc <=   1'bx;
         ctl_memsrc <=   1'bx;
         ctl_aluop <=    5'bxxxxx;
@@ -142,8 +130,27 @@ module control (
         ctl_memwrite <= 1'b0;
         ctl_regwrite <= 1'b0;
         ctl_memtoreg <= 1'bx;
-        ctl_bez <=      1'b0;
-        ctl_bnz <=      1'b1;
+        ctl_brop <=     3'b101;
+      end
+      4'b1110 : begin // BEZR
+        ctl_alusrc <=   1'bx;
+        ctl_memsrc <=   1'bx;
+        ctl_aluop <=    5'bxxxxx;
+        ctl_regdst <=   1'bx;
+        ctl_memwrite <= 1'b0;
+        ctl_regwrite <= 1'b0;
+        ctl_memtoreg <= 1'bx;
+        ctl_brop <=     3'b110;
+      end
+      4'b1111 : begin // BNZR
+        ctl_alusrc <=   1'bx;
+        ctl_memsrc <=   1'bx;
+        ctl_aluop <=    5'bxxxxx;
+        ctl_regdst <=   1'bx;
+        ctl_memwrite <= 1'b0;
+        ctl_regwrite <= 1'b0;
+        ctl_memtoreg <= 1'bx;
+        ctl_brop <=     3'b111;
       end
     endcase
   end

@@ -65,8 +65,11 @@ module cpu (
   
   // ID : Instruction Decode / Register Fetch
 
-  wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
-  wire [7:0] ID_braddr;
+  // wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
+  wire [1:0] ID_PC_next;
+  wire       ID_IFID_flush;
+  wire [7:0] ID_braddr_imm;
+  wire [7:0] ID_braddr_reg;
 
   // WB : Writeback
 
@@ -97,21 +100,27 @@ module cpu (
       IFID_insn <= 16'h0000;
       PC <= 8'h00;
     end
-    else if (ID_branch) begin
-      IFID_insn <= 16'h0000; // flush to NOP bubble
-      PC <= ID_braddr;
-    end
+    // else if (ID_branch) begin
+    //   IFID_insn <= 16'h0000; // flush to NOP bubble
+    //   PC <= ID_braddr;
+    // end
+    // else begin
+    //   IFID_insn <= IF_insn;
+    //   PC <= PC + 1; // mem is insn addressable
+    // end
     else begin
-      IFID_insn <= IF_insn;
-      PC <= PC + 1; // mem is insn addressable
-    end
+      if      (ID_PC_next == 2'b00) PC <= PC + 1;
+      else if (ID_PC_next == 2'b10) PC <= ID_braddr_imm;
+      else if (ID_PC_next == 2'b11) PC <= ID_braddr_reg;
+      IFID_insn <= ID_IFID_flush ? 16'h0000 : IF_insn;
+    end // else
   end
   
   // ===========================================================================
   // ID : Instruction Decode / Register Fetch
   // ===========================================================================
   
-  // Control
+  // Pipeline control
 
   wire       ID_alusrc;
   wire       ID_memsrc;
@@ -120,8 +129,7 @@ module cpu (
   wire       ID_memwrite;
   wire       ID_regwrite;
   wire       ID_memtoreg;
-  wire       ID_bez;
-  wire       ID_bnz;
+  wire [2:0] ID_brop;
 
   control control(.opcode(IFID_insn[15:12]),
                   .ctl_alusrc(ID_alusrc),
@@ -131,8 +139,19 @@ module cpu (
                   .ctl_memwrite(ID_memwrite),
                   .ctl_regwrite(ID_regwrite),
                   .ctl_memtoreg(ID_memtoreg),
-                  .ctl_bez(ID_bez),
-                  .ctl_bnz(ID_bnz));
+                  // .ctl_bez(ID_bez),
+                  .ctl_brop(ID_brop));
+
+  // Branch control
+
+  // (Forward declared)
+  // wire [1:0] ID_PC_next;
+  // wire       ID_IFID_flush;
+
+  brctl brctl(.ctl_brop(ID_brop),
+              .zero(ID_RD1_zero),
+              .pc_next(ID_PC_next),
+              .flush(ID_IFID_flush));
 
   // Register file access
 
@@ -164,9 +183,10 @@ module cpu (
 
   wire ID_RD1_zero = ~(|ID_RD1);
   // (Forward declared)
-  // wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
-  // wire [7:0] ID_braddr;
-  assign ID_braddr = IFID_insn[7:0];
+  // wire [7:0] ID_braddr_imm;
+  // wire [7:0] ID_braddr_reg;
+  assign ID_braddr_imm = IFID_insn[7:0];
+  assign ID_braddr_reg = ID_RD2[7:0];
 
   // ID/EX
 
@@ -321,7 +341,7 @@ module cpu (
       cpuout_WB_insn <= 0;
     end
     else begin
-      cpuout_IF_insn <= ID_branch ? 16'h0000 : IF_insn;
+      cpuout_IF_insn <= ID_IFID_flush ? 16'h0000 : IF_insn;
       cpuout_ID_insn <= cpuout_IF_insn;
       cpuout_EX_insn <= cpuout_ID_insn;
       cpuout_MEM_insn <= cpuout_EX_insn;
