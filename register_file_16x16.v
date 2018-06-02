@@ -11,9 +11,9 @@ module register_file_16x16 (
   );
   
   reg [15:0] ram [15:0];
-  wire clkrst = clk | rst;
+  // wire clkrst = clk | rst;
 
-  always @ (clkrst) begin
+  always @ (posedge clk) begin
     if (rst) begin
       ram[15] <= 16'h0000;
       ram[14] <= 16'h0000;

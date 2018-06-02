@@ -84,49 +84,75 @@ module tb_cpu;
     
     // Reset
     RST = 1;
-    #10;
+    #100;
     RST = 0;
-    #10;
-
-    /* Test nop, add, addi, sub, and, or */
-
-    #1000;
+    #100;
 
     /* Test pause and step */
 
-    // #70;
-    // PAUSE = 1;
-    // #100;
+    #100;
 
-    // STEP = 1;
-    // #30;
-    // STEP = 0;
-    // #30;
-    // STEP = 1;
-    // #30;
-    // STEP = 0;
-    // #30;
-    // STEP = 1;
-    // #1500;
+    PAUSE = 1;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #2000;
+    STEP = 0;
+    PAUSE = 0;
+    #5000;
 
-    // STEP = 0;
-    // #500;
+    PAUSE = 1;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #3000;
+    STEP = 0;
+    PAUSE = 0;
+    #3000;
 
-    // STEP = 1;
-    // #30;
-    // STEP = 0;
-    // #30;
-    // STEP = 1;
-    // #30;
-    // STEP = 0;
-    // #30;
-    // STEP = 1;
-    // #1500;
+    PAUSE = 1;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #2000;
+    STEP = 0;
+    #5000;
 
-    // STEP = 0;
-    // PAUSE = 0;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #30;
+    STEP = 0;
+    #30;
+    STEP = 1;
+    #3000;
+    STEP = 0;
+    PAUSE = 0;
+    #3000;
 
-    // #1000;
+    PAUSE = 0;
+
+    #1000;
   end
       
 endmodule

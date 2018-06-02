@@ -25,11 +25,12 @@ module cpu (
   // Clock Divider
   // ===========================================================================
   
-  wire PCLK; // Pipeline clock
-  clockdiv clk_div(.clk(CLK),
-                   .rst(RST),
-                   .pclk(PCLK)
-				   );
+  reg [5:0] counter = 6'b000000;
+  always @ (posedge CLK) begin
+    if (PAUSE) counter <= 0;
+    else counter <= counter + 1;
+  end // always @ (posedge CLK)
+  wire PCLK = &counter; // Pipeline clock
 
   // ===========================================================================
   // Step Button Debouncing
@@ -127,19 +128,26 @@ module cpu (
 
   // Register file access
 
+  wire [3:0]  ID_rs = IFID_insn[11:8];
+  wire [3:0]  ID_rt = IFID_insn[7:4];
   wire [15:0] ID_RD1;
   wire [15:0] ID_RD2;
   
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  wire WB_regwrite = WB_CTL_regwrite & advance_pipeline;
-  wire [3:0] ID_rwa1 = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
-  register_file_16x16 regfile(.clk(PCLK),
+  reg ID_writewindow;
+  always @ (posedge CLK) begin
+    if (advance_pipeline) ID_writewindow <= 1;
+    else ID_writewindow <= 0;
+  end
+  wire WB_regwrite = WB_CTL_regwrite & ID_writewindow;
+  wire [3:0] ID_rwa1 = WB_regwrite ? WB_writeaddr : ID_rs;
+  register_file_16x16 regfile(.clk(CLK),
                               .rst(RST),
                               
                               .rwa1(ID_rwa1), // rs (read) / WA (write)
-                              .ra2(IFID_insn[7:4]), // rt (read)
+                              .ra2(ID_rt), // rt (read)
                               .rd1(ID_RD1),
                               .rd2(ID_RD2),
 
