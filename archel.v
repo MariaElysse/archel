@@ -14,10 +14,8 @@ module archel (
   // CPU Pipeline
   // ===========================================================================
 
-  // Register file querying for VGA module display
-  wire        cpuin_regfile_request; // assert to request, then...
-  wire [3:0]  cpuin_regfile_ra;
-  wire        cpuout_regfile_grant; // ...check for posedge
+  // Register file output (continuous scan), updates every posedge CLK
+  wire [3:0]  cpuout_regfile_ra;
   wire [15:0] cpuout_regfile_rd;
 
   // Pipeline PC & instructions state
@@ -28,8 +26,8 @@ module archel (
   wire [15:0] cpuout_MEM_insn;
   wire [15:0] cpuout_WB_insn;
 
-  // Most recent memory write
-  wire        cpuout_memupdate; // check for posedge
+  // Most recent memory write (reach goal)
+  wire        cpuout_memupdate;
   wire [7:0]  cpuout_memaddr;
   wire [15:0] cpuout_memdata;
 
@@ -37,9 +35,7 @@ module archel (
            .PAUSE(PAUSE),
            .RST(RST),
            .STEP(STEP),
-           .cpuin_regfile_request(cpuin_regfile_request),
-           .cpuin_regfile_ra(cpuin_regfile_ra),
-           .cpuout_regfile_grant(cpuout_regfile_grant),
+           .cpuout_regfile_ra(cpuout_regfile_ra),
            .cpuout_regfile_rd(cpuout_regfile_rd),
            .cpuout_PC(cpuout_PC),
            .cpuout_IF_insn(cpuout_IF_insn),
