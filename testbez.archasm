@@ -6,6 +6,5 @@ nop
 addi $2 -1
 nop
 nop
-nop
 bez  $2 0
 bez  $0 2

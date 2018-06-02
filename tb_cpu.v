@@ -85,69 +85,20 @@ module tb_cpu;
 
     /* Test pause and step */
 
-    #100;
-
+    #3000;
     PAUSE = 1;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #2000;
-    STEP = 0;
-    PAUSE = 0;
     #5000;
-
-    PAUSE = 1;
     STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #3000;
-    STEP = 0;
-    PAUSE = 0;
-    #3000;
-
-    PAUSE = 1;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #2000;
-    STEP = 0;
-    #5000;
-
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #30;
-    STEP = 0;
-    #30;
-    STEP = 1;
-    #3000;
-    STEP = 0;
-    PAUSE = 0;
-    #3000;
-
-    PAUSE = 0;
-
     #1000;
+    STEP = 0;
+    #5000;
+    STEP = 1;
+    #1000;
+    STEP = 0;
+    #5000;
+    PAUSE = 0;
+    #3000;
+	 
   end
       
 endmodule
