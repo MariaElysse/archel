@@ -112,7 +112,7 @@ module control (
         ctl_memtoreg <= 1'bx;
         ctl_brop <=     1'b0;
       end
-      4'b1100 : begin // BEZ
+      4'b1100 : begin // BNZ
         ctl_alusrc <=   1'bx;
         ctl_memsrc <=   1'bx;
         ctl_aluop <=    5'bxxxxx;

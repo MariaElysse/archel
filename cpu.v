@@ -65,7 +65,7 @@ module cpu (
   
   // ID : Instruction Decode / Register Fetch
 
-  wire       ID_branch = ID_RD1_zero & ID_brop;
+  wire       ID_branch = ID_RD1_nonzero & ID_brop;
   wire [7:0] ID_braddr;
 
   // WB : Writeback
@@ -79,7 +79,7 @@ module cpu (
   // ===========================================================================
   
   // (Forward declared)
-  // wire       ID_branch = ID_RD1_zero & ID_brop;
+  // wire       ID_branch = ID_RD1_nonzero & ID_brop;
   // wire [7:0] ID_braddr;
 
   reg [7:0] PC = 8'b00000000;
@@ -160,9 +160,9 @@ module cpu (
 
   // Branch logic
 
-  wire ID_RD1_zero = ~(|ID_RD1);
+  wire ID_RD1_nonzero = (|ID_RD1);
   // (Forward declared)
-  // wire       ID_branch = ID_RD1_zero & ID_brop;
+  // wire       ID_branch = ID_RD1_nonzero & ID_brop;
   // wire [7:0] ID_braddr;
   assign ID_braddr = IFID_insn[7:0];
 
