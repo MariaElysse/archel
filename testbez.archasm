@@ -1,0 +1,11 @@
+addi $2 2
+addi $4 1
+addi $5 1
+nop
+nop
+addi $2 -1
+nop
+nop
+nop
+bez  $2 0
+bez  $0 2

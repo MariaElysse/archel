@@ -71,9 +71,7 @@ module cpu (
   // IF : Instruction Fetch
   // ===========================================================================
   
-  // Forward declared wires
-  // wire       ID_RD1_zero;
-  // wire       ID_brop;
+  // (Forward declared)
   // wire       ID_branch = ID_RD1_zero & ID_brop;
   // wire [7:0] ID_braddr;
 
@@ -167,7 +165,6 @@ module cpu (
   reg        IDEX_CTL_WB_memtoreg;
   reg [15:0] IDEX_RD1;
   reg [15:0] IDEX_RD2;
-  // reg [15:0] IDEX_sext_imm;
   reg [7:0]  IDEX_imm;
   reg [3:0]  IDEX_rs; // R dest for I-type insns
   reg [3:0]  IDEX_rd; // R dest for R-type insns
@@ -183,7 +180,6 @@ module cpu (
       IDEX_CTL_WB_memtoreg <= 0;
       IDEX_RD1 <= 0;
       IDEX_RD2 <= 0;
-      // IDEX_sext_imm <= 0;
       IDEX_imm <= 0;
       IDEX_rs <= 0;
       IDEX_rd <= 0;
@@ -198,7 +194,6 @@ module cpu (
       IDEX_CTL_WB_memtoreg <= ID_memtoreg;
       IDEX_RD1 <= ID_RD1;
       IDEX_RD2 <= ID_RD2;
-      // IDEX_sext_imm <= { {8{IFID_insn[7]}}, IFID_insn[7:0] };
       IDEX_imm <= IFID_insn[7:0];
       IDEX_rs <= IFID_insn[11:8];
       IDEX_rd <= IFID_insn[3:0];
