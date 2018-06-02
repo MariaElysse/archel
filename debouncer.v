@@ -9,7 +9,8 @@ module debouncer(
   output wire btn_up // pulse 1cy
   );
   
-  reg [23:0] db_counter;
+  reg [5:0] db_counter; // fake simulation
+  // reg [23:0] db_counter; // real synthesis
   
   always @ (posedge clk) begin
     if (rst) begin
