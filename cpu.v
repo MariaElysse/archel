@@ -4,19 +4,19 @@ module cpu (
   input  wire        RST, // button input
   input  wire        STEP, // button input
 
-  input  wire        cpuin_regfile_request, // assert to request, then...
-  input  wire [3:0]  cpuin_regfile_ra,
-  output wire        cpuout_regfile_grant, // ...check for posedge
+  // will constantly cycle through all the registers
+  output wire [3:0]  cpuout_regfile_ra,
   output wire [15:0] cpuout_regfile_rd,
 
   output wire [7:0]  cpuout_PC,
-  output wire [15:0] cpuout_IF_insn,
-  output wire [15:0] cpuout_ID_insn,
-  output wire [15:0] cpuout_EX_insn,
-  output wire [15:0] cpuout_MEM_insn,
-  output wire [15:0] cpuout_WB_insn,
+  output reg [15:0]  cpuout_IF_insn,
+  output reg  [15:0] cpuout_ID_insn,
+  output reg  [15:0] cpuout_EX_insn,
+  output reg  [15:0] cpuout_MEM_insn,
+  output reg  [15:0] cpuout_WB_insn,
 
-  output wire        cpuout_memupdate, // check for posedge
+  // reach goal
+  output wire        cpuout_memupdate,
   output wire [7:0]  cpuout_memaddr,
   output wire [15:0] cpuout_memdata
   );
@@ -51,7 +51,13 @@ module cpu (
   // Globals
   // ===========================================================================
   
-  wire advance_pipeline = ((~PAUSE) && PCLK) || (PAUSE && step_btn_down);
+  reg [1:0] advance_pipeline;
+  always @ (posedge CLK) begin
+    advance_pipeline[0] <= ((~PAUSE) && PCLK) || (PAUSE && step_btn_down);
+    advance_pipeline[1] <= advance_pipeline[0];
+  end
+  reg [3:0] scanreg_next = 4'h0;
+  always @ (posedge CLK) scanreg_next <= scanreg_next + 1;
 
   // ===========================================================================
   // Forward Declarations
@@ -86,7 +92,7 @@ module cpu (
 
   reg [15:0] IFID_insn;
 
-  always @ (posedge advance_pipeline or posedge RST) begin
+  always @ (posedge advance_pipeline[1] or posedge RST) begin
     if (RST) begin
       IFID_insn <= 16'h0000;
       PC <= 8'h00;
@@ -135,15 +141,16 @@ module cpu (
   
   reg ID_writewindow;
   always @ (posedge CLK) begin
-    if (advance_pipeline) ID_writewindow <= 1;
+    if (advance_pipeline[1]) ID_writewindow <= 1;
     else ID_writewindow <= 0;
   end
   wire WB_regwrite = WB_CTL_regwrite & ID_writewindow;
   wire [3:0] ID_rwa1 = WB_regwrite ? WB_writeaddr : ID_rs;
+  wire [3:0] ID_rwa1_or_scanreg = (|advance_pipeline | ID_writewindow) ? ID_rwa1 : scanreg_next;
   register_file_16x16 regfile(.clk(CLK),
                               .rst(RST),
                               
-                              .rwa1(ID_rwa1), // rs (read) / WA (write)
+                              .rwa1(ID_rwa1_or_scanreg), // rs (read) / WA (write)
                               .ra2(ID_rt), // rt (read)
                               .rd1(ID_RD1),
                               .rd2(ID_RD2),
@@ -174,7 +181,7 @@ module cpu (
   reg [3:0]  IDEX_rs; // R dest for I-type insns
   reg [3:0]  IDEX_rd; // R dest for R-type insns
 
-  always @ (posedge advance_pipeline or posedge RST) begin
+  always @ (posedge advance_pipeline[1] or posedge RST) begin
     if (RST) begin
       IDEX_CTL_EX_alusrc <= 0;
       IDEX_CTL_EX_memsrc <= 0;
@@ -230,7 +237,7 @@ module cpu (
   reg [7:0]  EXMEM_mem_rwa;
   reg [15:0] EXMEM_reg_wa;
 
-  always @ (posedge advance_pipeline or posedge RST) begin
+  always @ (posedge advance_pipeline[1] or posedge RST) begin
     if (RST) begin
       EXMEM_CTL_MEM_memwrite <= 0;
       EXMEM_CTL_WB_regwrite <= 0;
@@ -256,7 +263,7 @@ module cpu (
   // ===========================================================================
   
   wire [15:0] MEM_data;
-  wire MEM_memwrite = EXMEM_CTL_MEM_memwrite & advance_pipeline;
+  wire MEM_memwrite = EXMEM_CTL_MEM_memwrite & advance_pipeline[1];
 
   data_mem_16x256 data_mem(.clk(CLK),
                            .rwa(EXMEM_mem_rwa),
@@ -272,7 +279,7 @@ module cpu (
   reg [15:0] MEMWB_wd_reg;
   reg [3:0]  MEMWB_wa;
 
-  always @ (posedge advance_pipeline or posedge RST) begin
+  always @ (posedge advance_pipeline[1] or posedge RST) begin
     if (RST) begin
       MEMWB_CTL_WB_regwrite <= 0;
       MEMWB_CTL_WB_memtoreg <= 0;
@@ -298,4 +305,29 @@ module cpu (
   // wire [3:0]  WB_writeaddr = MEMWB_wa;
   // wire [15:0] WB_writedata = MEMWB_CTL_WB_memtoreg ? MEMWB_wd_mem : MEMWB_wd_reg;
   
+  // ===========================================================================
+  // cpuout exports
+  // ===========================================================================
+
+  assign cpuout_PC = PC;
+  always @ (posedge advance_pipeline[1] or posedge RST) begin
+    if (RST) begin
+      cpuout_IF_insn <= 0;
+      cpuout_ID_insn <= 0;
+      cpuout_EX_insn <= 0;
+      cpuout_MEM_insn <= 0;
+      cpuout_WB_insn <= 0;
+    end
+    else begin
+      cpuout_IF_insn <= ID_branch ? 16'h0000 : IF_insn;
+      cpuout_ID_insn <= cpuout_IF_insn;
+      cpuout_EX_insn <= cpuout_ID_insn;
+      cpuout_MEM_insn <= cpuout_EX_insn;
+      cpuout_WB_insn <= cpuout_MEM_insn;
+    end
+  end
+
+  assign cpuout_regfile_ra = advance_pipeline[1] ? 4'hx : scanreg_next;
+  assign cpuout_regfile_rd = advance_pipeline[1] ? 16'hxxxx : ID_RD1;
+
 endmodule // cpu

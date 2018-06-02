@@ -29,13 +29,12 @@ module tb_cpu;
   reg PAUSE;
   reg RST;
   reg STEP;
-  reg cpuin_regfile_request;
-  reg [3:0] cpuin_regfile_ra;
 
   // Outputs
   wire cpuout_regfile_grant;
+  wire [3:0]  cpuout_regfile_ra;
   wire [15:0] cpuout_regfile_rd;
-  wire [7:0] cpuout_PC;
+  wire [7:0]  cpuout_PC;
   wire [15:0] cpuout_IF_insn;
   wire [15:0] cpuout_ID_insn;
   wire [15:0] cpuout_EX_insn;
@@ -51,9 +50,7 @@ module tb_cpu;
     .PAUSE(PAUSE), 
     .RST(RST), 
     .STEP(STEP), 
-    .cpuin_regfile_request(cpuin_regfile_request), 
-    .cpuin_regfile_ra(cpuin_regfile_ra), 
-    .cpuout_regfile_grant(cpuout_regfile_grant), 
+    .cpuout_regfile_ra(cpuout_regfile_ra), 
     .cpuout_regfile_rd(cpuout_regfile_rd), 
     .cpuout_PC(cpuout_PC), 
     .cpuout_IF_insn(cpuout_IF_insn), 
@@ -74,8 +71,6 @@ module tb_cpu;
     PAUSE = 0;
     RST = 0;
     STEP = 0;
-    cpuin_regfile_request = 0;
-    cpuin_regfile_ra = 0;
 
     // Wait 100 ns for global reset to finish
     #100;
