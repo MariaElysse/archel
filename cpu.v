@@ -87,7 +87,7 @@ module cpu (
 
   reg [15:0] IFID_insn;
 
-  always @ (posedge advance_pipeline) begin
+  always @ (posedge advance_pipeline or posedge RST) begin
     if (RST) begin
       IFID_insn <= 16'h0000;
       PC <= 8'h00;
@@ -135,16 +135,17 @@ module cpu (
   // DO NOT read and write in the same cycle
   // a: read_1 and write
   // b: read_2
-  wire [3:0] ID_A1 = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
+  wire WB_regwrite = WB_CTL_regwrite & advance_pipeline;
+  wire [3:0] ID_rwa1 = WB_CTL_regwrite ? WB_writeaddr : IFID_insn[11:8];
   register_file_16x16 regfile(.clk(PCLK),
                               .rst(RST),
                               
-                              .rwa1(ID_A1), // rs (read) / WA (write)
+                              .rwa1(ID_rwa1), // rs (read) / WA (write)
                               .ra2(IFID_insn[7:4]), // rt (read)
                               .rd1(ID_RD1),
                               .rd2(ID_RD2),
 
-                              .we(WB_CTL_regwrite), // write enable
+                              .we(WB_regwrite), // write enable
                               .wd(WB_writedata));
 
   // Branch logic
@@ -170,7 +171,7 @@ module cpu (
   reg [3:0]  IDEX_rs; // R dest for I-type insns
   reg [3:0]  IDEX_rd; // R dest for R-type insns
 
-  always @ (posedge advance_pipeline) begin
+  always @ (posedge advance_pipeline or posedge RST) begin
     if (RST) begin
       IDEX_CTL_EX_alusrc_a <= 0;
       IDEX_CTL_EX_alusrc_b <= 0;
@@ -224,7 +225,7 @@ module cpu (
   reg [7:0]  EXMEM_mem_rwa;
   reg [15:0] EXMEM_reg_wa;
 
-  always @ (posedge advance_pipeline) begin
+  always @ (posedge advance_pipeline or posedge RST) begin
     if (RST) begin
       EXMEM_CTL_MEM_memwrite <= 0;
       EXMEM_CTL_WB_regwrite <= 0;
@@ -248,11 +249,12 @@ module cpu (
   // ===========================================================================
   
   wire [15:0] MEM_data;
+  wire MEM_memwrite = EXMEM_CTL_MEM_memwrite & advance_pipeline;
 
   data_mem_16x256 data_mem(.clk(CLK),
                            .rwa(EXMEM_mem_rwa),
                            .rd(MEM_data),
-                           .we(EXMEM_CTL_MEM_memwrite),
+                           .we(MEM_memwrite),
                            .wd(EXMEM_aluout));
 
   // MEM/WB
@@ -263,7 +265,7 @@ module cpu (
   reg [15:0] MEMWB_wd_reg;
   reg [3:0]  MEMWB_wa;
 
-  always @ (posedge advance_pipeline) begin
+  always @ (posedge advance_pipeline or posedge RST) begin
     if (RST) begin
       MEMWB_CTL_WB_regwrite <= 0;
       MEMWB_CTL_WB_memtoreg <= 0;
