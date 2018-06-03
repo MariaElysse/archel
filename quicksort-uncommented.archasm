@@ -16,7 +16,7 @@ swi $11 i+5
 swi $12 i+6
 swi $13 i+7
 addi $2 i+0
-addi $3 i+7
+addi $3 i+3
 addi $15 i+128
 nop
 nop
@@ -26,31 +26,60 @@ quicksort:
 sw $15 $14 --
 addi $14 i-1
 slt $2 $3 $6
+nop
+nop
 bezi $6 :qs-end
 add $0 $0 $15
+nop
+nop
 addi $15 :qs0
 bezi $0 :partition
 qs0:
 sw $3 $14 --
+nop
+nop
 addi $14 i-1
+nop
+nop
 sw $1 $14 --
+nop
+nop
 addi $14 i-1
 add $1 $0 $3
+nop
+nop
 addi $3 i-1
 add $0 $0 $15
+nop
+nop
 addi $15 :qs1
-bez $0 :quicksort
+bezi $0 :quicksort
 qs1:
-lw -- $14 $2
 addi $14 i+1
+nop
+nop
+lw -- $14 $2
+nop
+nop
 addi $2 i+1
+addi $14 i+1
+nop
+nop
 lw -- $14 $3
 add $0 $0 $15
+nop
+nop
 addi $15 :qs2
 bez $0 :quicksort
 qs2:
 qs-end:
+addi $14 i+1
+nop
+nop
 lw -- $14 $15
+nop
+nop
+nop
 bezr $0 $15 --
 nop
 nop
@@ -58,40 +87,62 @@ nop
 nop
 partition:
 add $0 $0 $6
+nop
+nop
 lw -- $2 $6
 add $0 $2 $7
 add $0 $3 $8
+nop
+nop
 addi $7 i+1
 add $0 $0 $9
 notdone:
 leftmarking:
 slt $8 $7 $11
 lw -- $7 $10
+nop
+nop
 slt $6 $10 $12
+nop
+nop
 or $11 $12 $11
+nop
+nop
 bnzi $11 :rightmarking
 addi $7 i+1
 bezi $0 :leftmarking
 rightmarking:
 slt $8 $7 $11
 lw -- $8 $10
+nop
+nop
 slt $10 $6 $12
+nop
+nop
 or $11 $12 $11
+nop
+nop
 bnzi $11 :checkdone
 addi $8 i-1
 bezi $0 :rightmarking
 checkdone:
 slt $8 $7 $9
+nop
+nop
 bnzi $9 :done
 lw -- $7 $10
 lw -- $8 $11
+nop
+nop
 sw $10 $8 --
 sw $11 $7 --
 bezi $0 :notdone
 done:
 lw -- $2 $10
 lw -- $8 $11
+nop
+nop
 sw $10 $8 --
 sw $11 $2 --
 add $0 $8 $1
-bezr $0 $15
+bezr $0 $15 --

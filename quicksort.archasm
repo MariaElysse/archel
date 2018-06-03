@@ -70,13 +70,14 @@ quicksort:
   qs1:
 
   // pop splitpoint from stack into first arg
-  lw -- $14 $2
   addi $14 +1
+  lw -- $14 $2
 
   // increment splitpoint
   addi $2 1
 
   // pop last from stack into second arg
+  addi $14 +1
   lw -- $14 $3
 
   // quicksort second half (splitpoint + 1 : last)
@@ -87,6 +88,7 @@ quicksort:
 
   qs-end:
   // pop retaddr from stack and jump there
+  addi $14 +1
   lw -- $14 $15
   bezr $0 $15 --
 
