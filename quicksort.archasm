@@ -1,0 +1,155 @@
+begin:
+  
+  // initialize stack pointer ($14)
+
+  addi $14 255
+
+  // load values into M[0:7]
+
+  addi $6  51
+  addi $7  29
+  addi $8  78
+  addi $9  87
+  addi $10 35
+  addi $11 24
+  addi $12 43
+  addi $13 41
+
+  swi  $6  0
+  swi  $7  1
+  swi  $8  2
+  swi  $9  3
+  swi  $10 4
+  swi  $11 5
+  swi  $12 6
+  swi  $13 7
+
+  // pass arguments: first=0 last=7 return=256
+
+  addi $2 0
+  addi $3 7
+  addi $15 128
+
+
+
+quicksort:
+
+  // push retaddr to stack
+  sw $15 $14 --
+  addi $14 -1
+  
+  // base check: if ((first < last) == 0) goto :qs-end
+  slt $2 $3 $6 // TODO: add 2 nops
+  bezi $6 :qs-end
+
+  // call partition
+  // args are already in the right place: first=R[$2] last=R[$3]
+  // partition shouldn't touch regs $2, $3, $4, $5 (args)
+  add $0 $0 $15
+  addi $15 :qs0
+  bezi $0 :partition
+  qs0:
+  // now splitpoint (return val) should be in $1
+
+  // push last to stack
+  sw $3 $14 --
+  addi $14 -1
+
+  // push splitpoint to stack
+  sw $1 $14 --
+  addi $14 -1
+
+  // change second arg ($3) to (splitpoint - 1)
+  add $1 $0 $3
+  addi $3 -1
+
+  // quicksort first half (first : splitpoint - 1)
+  add $0 $0 $15
+  addi $15 :qs1
+  bezi $0 :quicksort
+  qs1:
+
+  // pop splitpoint from stack into first arg
+  lw -- $14 $2
+  addi $14 +1
+
+  // increment splitpoint
+  addi $2 1
+
+  // pop last from stack into second arg
+  lw -- $14 $3
+
+  // quicksort second half (splitpoint + 1 : last)
+  add $0 $0 $15
+  addi $15 :qs2
+  bezi $0 :quicksort
+  qs2:
+
+  qs-end:
+  // pop retaddr from stack and jump there
+  lw -- $14 $15
+  bezr $0 $15 --
+
+
+
+partition:
+  
+  // choose pivot = first element
+  // load pivotvalue into $6
+  add $0 $0 $6
+  lw -- $2 $6
+
+  // load (leftmark = first + 1) into $7, (rightmark = last) into $8
+  add $0 $2 $7
+  add $0 $3 $8
+  addi $7 +1
+
+  // load (done = 0) into $9
+  add $0 $0 $9
+
+  notdone:
+
+    leftmarking:
+      slt $8 $7 $11   // rightmark < leftmark ?
+      lw -- $7 $10    // $10 <- M[leftmark]
+      slt $6 $10 $12  // pivotvalue < M[leftmark] ?
+      or $11 $12 $11  // either: skip
+      bnzi $11 :rightmarking
+      addi $7 +1
+      bezi $0 :leftmarking
+
+    rightmarking:
+      slt $8 $7 $11   // rightmark < leftmark ?
+      lw -- $8 $10    // $10 <- M[rightmark]
+      slt $10 $6 $12  // M[rightmark] < pivotvalue ?
+      or $11 $12 $11  // either: skip
+      bnzi $11 :checkdone
+      addi $8 -1
+      bezi $0 :rightmarking
+
+    checkdone:
+      slt $8 $7 $9   // rightmark < leftmark ?
+      bnzi $9 :done  // done ?
+
+    // not done: swap M[leftmark] and M[rightmark]
+
+    lw -- $7 $10
+    lw -- $8 $11
+    sw $10 $8 --
+    sw $11 $7 --
+
+    bezi $0 :notdone
+
+  done: // swap M[first] and M[rightmark]
+    lw -- $2 $10
+    lw -- $8 $11
+    sw $10 $8 --
+    sw $11 $2 --
+
+    // retval = rightmark
+    add $0 $8 $1
+
+    // return
+    bezr $0 $15
+
+
