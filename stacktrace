@@ -1,0 +1,62 @@
++[1]    ret<alldone>
++[2]    last=7
++[3]    pivot=5
+0 -> 1  (left)
++[4]    ret<0:qs1>
++[5]    last=4
++[6]    pivot=0
+1 -> 2  (left)
++[7]    ret<1:qs1>
+-[7]    ret<1:qs1>
+2 -> 1  (left)
+-[6]    pivot=0
+-[5]    last=4
+1 -> 2  (right)
++[5]    ret<1:qs2>
++[6]    last=6
++[7]    pivot=1
+2 -> 3  (left)
++[8]    ret<2:qs1>
+-[8]    ret<2:qs1>
+3 -> 2  (left)
+-[7]    pivot=1
+-[6]    last=4
+2 -> 3  (right)
++[6]    ret<2:qs2>
++[7]    last=4
++[8]    pivot=3
+3 -> 4  (left)
++[9]    ret<3:qs1>
+-[9]    ret<3:qs1>
+4 -> 3  (left)
+-[8]    pivot=3
+-[7]    last=4
+3 -> 4  (right)
++[7]    ret<3:qs2>
+-[7]    ret<3:qs2>
+4 -> 3  (right)
+-[6]    ret<2:qs2>
+3 -> 2  (right)
+-[5]    ret<1:qs2>
+2 -> 1  (right)
+-[4]    ret<0:qs1>
+1 -> 0  (left)
+-[3]    pivot=5
+-[2]    last=7
+0 -> 1  (right)
++[2]    ret<0:qs2>
++[3]    last=7
++[4]    pivot=7
+1 -> 2  (left)
++[5]    ret<1:qs1>
+-[5]    ret<1:qs1>
+2 -> 1  (left)
+-[4]    pivot=7
+-[3]    last=7
+1 -> 2  (right)
++[3]    ret<1:qs2>
+-[3]    ret<1:qs2>
+2 -> 1  (right)
+-[2]    ret<0:qs2>
+1 -> 0  (right)
+-[1]    ret<alldone>
