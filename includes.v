@@ -18,6 +18,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
+module includes();
   parameter AN_0 = 0;
   parameter AN_1 = 1;
   parameter AN_2 = 2;
@@ -57,3 +58,4 @@
   parameter AN_DS= 36;
   parameter AN_PT= 37;
   parameter AN_SP= 38;
+ endmodule

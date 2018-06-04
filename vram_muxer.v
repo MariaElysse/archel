@@ -22,25 +22,24 @@ module vram_muxer( //select one of the inputs to be activated and passed on to t
 		input clk,
 		input rst,
 		
-		input wire [7:0] [8:0] vram_addr , //from the module that wants to do the write
-		input wire [7:0] [639:0] write_vram,
-		input wire [7:0] write_active,
-		output wire[7:0] active_writer, //to the module wanting to do the write (wait ur turn lol)
-		output wire [7:0] [639:0] read_vram,
+		input wire  [17:0] vram_addr , //from the module that wants to do the write
+		input wire  [1279:0] write_vram,
+		input wire  [1:0] write_active,
+		output wire [1:0] active_writer, //to the module wanting to do the write (wait ur turn lol)
+		output wire [1279:0] read_vram,
 		output wire [639:0] to_vram_write,
 		input wire  [639:0] from_vram_read,
 		output wire [8:0] to_vram_addr,
 		output wire to_vram_wea
    );
-	reg [3:0] active_writer_n = 0;
+	reg active_writer_n = 0;
 	
-	assign active_writer = 1'b1 << active_writer_n;
-	assign to_vram_write = write_vram[active_writer_n];
-	assign to_vram_addr = vram_addr[active_writer_n];
+	assign active_writer = (active_writer_n)? 2'b10 : 2'b01; //if 1, else 
+	assign to_vram_write = (active_writer_n)? write_vram[1279:640]: write_vram[639:0];
+	assign to_vram_addr = (active_writer_n)? vram_addr[17:9]: vram_addr[8:0];
 	assign to_vram_wea = write_active[active_writer_n];
-	assign from_vram_read = from_vram_read[active_writer_n];
-	
+	assign read_vram = (active_writer_n)? {from_vram_read, {640{1'b0}}} : {{640{1'b0}}, from_vram_read};
 	always @ (posedge clk) begin 
-		active_writer_n = active_writer_n + 1;
+		active_writer_n <= ~active_writer_n;
 	end
 endmodule

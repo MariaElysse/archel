@@ -21,8 +21,9 @@
 `include "includes.v"
 module write_register(
 		input wire clk,
-		input wire [15:0] registers [0:15], 
-		input wire [15:0] instr_ptr,
+		input wire [3:0] regnum,
+		input wire [15:0] regdat,
+		input wire [7:0] instr_ptr, //for some reason short as fuck lmao
 		input wire [639:0] vram_in,
 		output wire [8:0] vram_addr,
 		output wire [639:0] vram_out,
@@ -30,19 +31,28 @@ module write_register(
 		output wire activate_write
     );
 	 
-	 parameter regs_col_1 = 330; //x
-	 parameter regs_row_1 = 250; //y 
+	 parameter regs_col_1 = 450; //x
+	 parameter regs_row_1 = 340; //y 
 	 
 	 reg [5:0] letter; //the letter number we want written
 	 reg [4:0] which_string; //there's 18 strings to write
 	 reg [3:0] which_letter; //REGISTERS. has 10 letters 
 	 reg [3:0] which_register;
+	 wire which_row;
+	 assign which_row = (which_register > 8); 
+
 	 wire done;
+	 
+	 reg [15:0] registers [0:15];
+	 always @ (posedge clk) begin 
+			registers[regnum] <= regdat; //that should work, i guess
+	 end
 	 
 	 write_letter w_let_(
 		.clk(clk),
 		.let(letter), //@ the verilog compiler: die bitch
-		.x_pos(((which_string >= 9) ? 1:0)*80 + which_letter*7 + regs_col_1), //(which column [0/1])*(col_length=80) + (which_letter)*letter_width=7
+		.x_pos(((which_string >= 9) ? 80:0) + which_letter*7 + regs_col_1), //(which column [0/1])*(col_length=80) + (which_letter)*letter_width=7
+		//Size mismatch in connection of port <x_pos>. Formal port size is 10-bit while actual signal size is 32-bit.
 		.y_pos(which_row*12 + regs_row_1), //(which row [0-9])*(row_width)
 		.line_from_vram(vram_in),
 		.vram_turn(vram_turn),
@@ -74,6 +84,7 @@ always @ (*) begin
 		6: which_register <= 5;
 		7: which_register <= 6;
 		8: which_register <= 7;
+		
 		9: which_register <= 7;
 		10: which_register <= 8;
 		11: which_register <= 9;
@@ -86,8 +97,8 @@ always @ (*) begin
 	endcase
 end
 always @(posedge vram_turn) begin
-	if (letter >= 9) begin
-		letter <= 0;
+	if (which_letter >= 9) begin
+		which_letter <= 0;
 		if (which_string >= 18) begin 
 			which_string <= 0;
 		end //if which_...
@@ -96,7 +107,7 @@ always @(posedge vram_turn) begin
 		end //else which...
 	end //if letter >= 9
 	else begin 
-		letter <= letter + 1;
+		which_letter <= which_letter + 1;
 	end //else letter >= 9
 end
 
@@ -104,47 +115,47 @@ always @(posedge vram_turn) begin
 	if (done) begin 
 		if (which_string == 0) begin 
 		case (which_letter) //REGISTERS.
-			0: letter <= AN_R;
-			1: letter <= AN_E;
-			2: letter <= AN_G;
-			3: letter <= AN_I;
-			4: letter <= AN_S;
-			5: letter <= AN_T;
-			6: letter <= AN_E;
-			7: letter <= AN_R;
-			8: letter <= AN_S;
-			9: letter <= AN_PT;
-			default: letter <= AN_X;
+			0: letter <= includes.AN_R;
+			1: letter <= includes.AN_E;
+			2: letter <= includes.AN_G;
+			3: letter <= includes.AN_I;
+			4: letter <= includes.AN_S;
+			5: letter <= includes.AN_T;
+			6: letter <= includes.AN_E;
+			7: letter <= includes.AN_R;
+			8: letter <= includes.AN_S;
+			9: letter <= includes.AN_PT;
+			default: letter <= includes.AN_X;
 		endcase
 	end //which_string
 	else if (which_string == 9) begin
 		case (which_letter) // IP. FFFF
-			0: letter <= AN_I;
-			1: letter <= AN_P;
-			2: letter <= AN_PT;
-			3: letter <= AN_SP;
-			4: letter <= instr_ptr[15:12];
-			5: letter <= instr_ptr[11:8];
+			0: letter <= includes.AN_I;
+			1: letter <= includes.AN_P;
+			2: letter <= includes.AN_PT;
+			3: letter <= includes.AN_SP;
+			4: letter <= includes.AN_0;
+			5: letter <= includes.AN_0;
 			6: letter <= instr_ptr[7:4];
 			7: letter <= instr_ptr[3:0];
-			8: letter <= AN_SP;
-			9: letter <= AN_SP;
-			default: letter <= AN_X;
+			8: letter <= includes.AN_SP;
+			9: letter <= includes.AN_SP;
+			default: letter <= includes.AN_X;
 		endcase 
 	end //which_string else if
 	else begin // the gp registers RF. FFFF
 		case (which_letter)
-			0: letter <= AN_R;
+			0: letter <= includes.AN_R;
 			1: letter <= which_register;
-			2: letter <= AN_PT;
-			3: letter <= AN_SP;
+			2: letter <= includes.AN_PT;
+			3: letter <= includes.AN_SP;
 			4: letter <= registers[which_register][15:12];
 			5: letter <= registers[which_register][11:8];
 			6: letter <= registers[which_register][7:4];
 			7: letter <= registers[which_register][3:0];
-			8: letter <= AN_SP;
-			9: letter <= AN_SP;
-			default: letter <= AN_X;
+			8: letter <= includes.AN_SP;
+			9: letter <= includes.AN_SP;
+			default: letter <= includes.AN_X;
 		endcase
 	end //which_string else 
 end

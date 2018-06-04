@@ -68,11 +68,11 @@ module archel (
   wire [639:0]   vram_write;
   wire           vram_write_enable;
   
-  wire [639:0]   shared_vram_data_write_bus[7:0];
-  wire [8:0]     shared_vram_addr_bus[7:0];
-  wire [639:0]   shared_vram_data_read_bus[7:0];
-  wire [7:0]          shared_write_active_bus;
-  wire [7:0]          activator_onehot;
+  wire [1279:0]   shared_vram_data_write_bus;
+  wire [17:0]     shared_vram_addr_bus;
+  wire [1279:0]   shared_vram_data_read_bus;
+  wire [1:0]      shared_write_active_bus;
+  wire [1:0]      activator_onehot;
   
   // TO MIKE: PLS DO NOT USE UNPACKED ARRAYS
   // THEYRE A PAIN IN THE ASS AND THIS SHIT DOESNT COMPILE
@@ -80,13 +80,28 @@ module archel (
   // pls i would love to be proven wrong but it seems that's what we have to deal with
   write_register w_regs_(
 		.clk(CLK),
-		.registers({16{16'b1010101010101010}}), //i mean it's weird but it works as a test value
-		.instr_ptr(16'b0000000110100100),
-		.vram_in(shared_vram_data_read_bus[0]), //0-7, only 8 "simultaneous" r/w allowed
-		.vram_addr(shared_vram_addr_bus[0]),
-		.vram_out(shared_vram_data_write_bus[0]),
+		.regnum(cpuout_regfile_ra), //i mean it's weird but it works as a test value
+		.regdat(cpuout_regfile_rd),
+		.instr_ptr(cpuout_PC),
+		.vram_in(shared_vram_data_read_bus[639:0]), //0
+		.vram_addr(shared_vram_addr_bus[8:0]),
+		.vram_out(shared_vram_data_write_bus[639:0]),
 		.vram_turn(activator_onehot[0]),
 		.activate_write(shared_write_active_bus[0])
+  );
+  write_pipeline w_pl_(
+		.clk(CLK),
+		.if_insn(cpuout_IF_insn),
+		.id_insn(cpuout_ID_insn),
+		.ex_insn(cpuout_EX_insn),
+		.mem_insn(cpuout_MEM_insn),
+		.wb_insn(cpuout_WB_insn),
+		
+		.read_vram(shared_vram_data_read_bus[1279:640]), //1
+		.vram_turn(activator_onehot[1]),
+		.write_vram(shared_vram_data_write_bus[1279:640]),
+		.activate_write(shared_write_active_bus[1]),
+		.vram_addr(shared_vram_addr_bus[17:9])
   );
   
   vram_muxer vram_muxer_( //fackin christ
@@ -110,9 +125,9 @@ module archel (
 		.dina(vram_write),
 		.douta(vram_read),
 		.clkb(CLK),
-		.web('b0),
+		.web(1'b0),
 		.addrb(agp_addr),
-		.dinb('b0),
+		.dinb(640'b0),
 		.doutb(agp_data)
 		//enable writes for b: no, never 
 		//enable writes for a: yes, always
