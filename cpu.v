@@ -181,6 +181,7 @@ module cpu (
 
   // Branch logic
 
+  wire ID_RD1_zero = ~(|ID_RD1);
   // (Forward declared)
   // wire [7:0] ID_braddr_imm;
   // wire [7:0] ID_braddr_reg;
