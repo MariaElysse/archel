@@ -66,6 +66,7 @@ module cpu (
   // ID : Instruction Decode / Register Fetch
 
   // wire       ID_branch = (ID_RD1_zero & ID_bez) | (~ID_RD1_zero & ID_bnz);
+  wire       ID_RD1_zero;
   wire [1:0] ID_PC_next;
   wire       ID_IFID_flush;
   wire [7:0] ID_braddr_imm;
@@ -181,7 +182,7 @@ module cpu (
 
   // Branch logic
 
-  wire ID_RD1_zero = ~(|ID_RD1);
+  assign ID_RD1_zero = ~(|ID_RD1);
   // (Forward declared)
   // wire [7:0] ID_braddr_imm;
   // wire [7:0] ID_braddr_reg;
