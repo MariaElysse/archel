@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon Jun  4 22:59:27 2018
+# Date: Thu Jun  7 15:48:09 2018
 #
 ##############################################################
 #
@@ -46,7 +46,7 @@ CSET axi_id_width=4
 CSET axi_slave_type=Memory_Slave
 CSET axi_type=AXI4_Full
 CSET byte_size=9
-CSET coe_file=/media/maria/F481-40DD/NERP_demo/vga_coe.coe
+CSET coe_file=/home/maria/cs152/rcv_zip/archel/vga_coe.coe
 CSET collision_warnings=ALL
 CSET component_name=vram
 CSET disable_collision_warnings=false
@@ -57,7 +57,7 @@ CSET enable_32bit_address=false
 CSET enable_a=Always_Enabled
 CSET enable_b=Always_Enabled
 CSET error_injection_type=Single_Bit_Error_Injection
-CSET fill_remaining_memory_locations=true
+CSET fill_remaining_memory_locations=false
 CSET interface_type=Native
 CSET load_init_file=true
 CSET mem_file=no_Mem_file_loaded
@@ -105,4 +105,4 @@ CSET write_width_b=640
 MISC pkg_timestamp=2012-11-19T16:22:25Z
 # END Extra information
 GENERATE
-# CRC: cfc38898
+# CRC: d7674a31
