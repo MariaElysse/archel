@@ -18,3 +18,5 @@ isim/
 # ipcore_dir*
 # !ipcore_dir/*.v
 program.archel
+*.png
+vga_log.txt
