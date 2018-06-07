@@ -21,7 +21,7 @@
 module vga(
 	input wire dclk, //pixel clk 25mhz
 	input wire rst,  //async reset (may not be necessary)
-	input wire [639:0] line, 
+	input wire [0:639] line, 
 	output wire [8:0] vram_read_addr,
 	output wire hsync, //horizontal sync
 	output wire vsync, //vertical sync 
@@ -55,12 +55,12 @@ reg [18:0] px;
 wire [9:0] actual_x; 
 wire [9:0] actual_y; 
 
-assign actual_x = (verti_ln >= v_backporch)? (verti_ln-v_backporch) : -1;
-assign actual_y = (horiz_px >= h_backporch)? (horiz_px-h_backporch) : -1;
+assign actual_y = (verti_ln >= v_backporch && verti_ln < v_frntporch)? (verti_ln-v_backporch) : 0;
+assign actual_x = (horiz_px >= h_backporch && horiz_px < h_frntporch)? (horiz_px-h_backporch) : 0;
 //sync pulses 
 assign hsync = (horiz_px < hpulse)? 0:1;
 assign vsync = (verti_ln < vpulse)? 0:1;
-assign vram_read_addr = verti_ln+v_backporch;
+assign vram_read_addr = actual_y;
 //access to the ram
 
 always @(posedge dclk, posedge rst) begin 
@@ -83,9 +83,7 @@ else begin
 		end
 	end
 	if (
-		actual_x != -1 && actual_x <= 640 &&
-		actual_y != -1 && actual_y <= 480
-	) begin 
+		actual_x != 0 && actual_y != 0) begin 
 		red <= 3'b000;
 		blu <= 2'b00;
 		if (line[actual_x-1] == 1'b1) begin 
