@@ -29,21 +29,27 @@ module write_letter(
 	input wire [639:0] line_from_vram, //actual pixel data
 	input wire vram_turn, //is it our turn to r/w from the vram?
 	output wire[8:0] line_addr, //output: which line are we reading from vram
-	output reg activate_write, //output: are we writing to the vram?
+	output wire activate_write, //output: are we writing to the vram?
 	output wire [639:0] line_to_vram,
-	output wire let_done //output: are we done writing this letter to the vram?
+	output reg let_done //output: are we done writing this letter to the vram?
     );
 
-reg  [639:0] updated_line; 
-reg  [639:0] line_mask;
+//reg  [639:0] updated_line = 0; 
+//reg  [639:0] line_mask = 0;
 reg  [3:0] let_line = 0; 
 wire [8:0] let_addr;
-wire [6:0] let_data ;
-assign line_to_vram = updated_line; //idk why this isnt just a register output
-assign line_addr = y_pos;
-assign let_done = let_line > 9; //consider changing to > 10
+wire [6:0] let_data;
+wire [6:0] l_data;
+assign activate_write = 1;
+//assign line_to_vram = updated_line; //idk why this isnt just a register output
+assign line_addr = y_pos + let_line;
+//assign let_done = let_line >= 9; //consider changing to > 10
 assign let_addr = let + let_line * 39; //which specific letter line we want
 
+
+assign line_to_vram =  ((line_from_vram & (~({{632{1'b0}}, 7'b1111111} << 632 - x_pos))) | (({{{632{1'b0}}, l_data}}) << 632 - x_pos));
+//eg [639:0] vram_reg = 0;
+assign l_data = (let == 38)? 7'b0000000: let_data;
 letters lets_(
 	.clka(clk),
 	.addra(let_addr),
@@ -51,23 +57,27 @@ letters lets_(
 	);
 	
 always @ (posedge vram_turn) begin //which line of the letter do you need today sir
-	if (let_line == 9) begin         //letters are 7-wide, 10-high (10x, 7y)
-		let_line <= 0;
+	//vram_reg <= ;
+	if (let_line < 9) begin  
+		let_line = let_line + 1;
+		let_done = 0;
+			//letters are 7-wide, 10-high (10x, 7y)
 	end
 	else begin 
-		let_line <= let_line + 1; 
+		let_done = 1;
+		let_line = 0; 
 	end 
 end 
 
-always @ (posedge vram_turn) begin //read the vram and letter, then change the updated_line register
-	activate_write = 0;
-	line_mask = 0;
-	line_mask = ~(7'b1111111 << (x_pos - 639)); //it's a mask, everywhere is 1 except the place i want to clear. consider problem from below (shifting fill)
-	updated_line = line_from_vram & line_mask; //clear the current vram data from the spot we want to write to
-	updated_line = 0;
-	updated_line = let_data ; //apparently it "may" fill the rest of the larger register with zeroes. MAY? fuckin shit
-	updated_line = updated_line << (x_pos - 639); //just make it two operations instead i guess, would have been nicer to have it be one
-	updated_line = line_from_vram | updated_line; //write to the space made by the above mask; 
-	activate_write = 1;
-end
+//always @ (posedge vram_turn) begin //read the vram and letter, then change the updated_line register
+//	activate_write = 0;
+//	line_mask = 0;
+//	line_mask = ~(7'b1111111 << (x_pos - 639)); //it's a mask, everywhere is 1 except the place i want to clear. consider problem from below (shifting fill)
+//	updated_line = line_from_vram & line_mask; //clear the current vram data from the spot we want to write to
+//	updated_line = 0;
+//	updated_line = let_data ; //apparently it "may" fill the rest of the larger register with zeroes. MAY? fuckin shit
+//	updated_line = updated_line << (x_pos - 639); //just make it two operations instead i guess, would have been nicer to have it be one
+//	updated_line = line_from_vram | updated_line; //write to the space made by the above mask; 
+//	activate_write = 1;
+//end
 endmodule

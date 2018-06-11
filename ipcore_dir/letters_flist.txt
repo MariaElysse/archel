@@ -1,4 +1,5 @@
 # Output products list for <letters>
+_xmsgs/pn_parser.xmsgs
 letters/blk_mem_gen_v7_3_readme.txt
 letters/doc/blk_mem_gen_v7_3_vinfo.html
 letters/doc/pg058-blk-mem-gen.pdf

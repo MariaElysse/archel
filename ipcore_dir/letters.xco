@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Mon Jun  4 22:58:14 2018
+# Date: Wed Jun  6 22:49:13 2018
 #
 ##############################################################
 #
@@ -46,7 +46,7 @@ CSET axi_id_width=4
 CSET axi_slave_type=Memory_Slave
 CSET axi_type=AXI4_Full
 CSET byte_size=9
-CSET coe_file=/media/maria/F481-40DD/NERP_demo/letters.coe
+CSET coe_file=/home/maria/cs152/final/archel/letters.coe
 CSET collision_warnings=ALL
 CSET component_name=letters
 CSET disable_collision_warnings=false
@@ -57,7 +57,7 @@ CSET enable_32bit_address=false
 CSET enable_a=Always_Enabled
 CSET enable_b=Always_Enabled
 CSET error_injection_type=Single_Bit_Error_Injection
-CSET fill_remaining_memory_locations=false
+CSET fill_remaining_memory_locations=true
 CSET interface_type=Native
 CSET load_init_file=true
 CSET mem_file=no_Mem_file_loaded
@@ -105,4 +105,4 @@ CSET write_width_b=7
 MISC pkg_timestamp=2012-11-19T16:22:25Z
 # END Extra information
 GENERATE
-# CRC: 52f909bf
+# CRC: ce2f6f28

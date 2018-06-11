@@ -27,7 +27,7 @@ module clockdiv(
 	);
 
 // 17-bit counter variable
-reg [16:0] q;
+reg [16:0] q = 0;
 
 // Clock divider --
 // Each bit in q is a clock signal that is
@@ -45,10 +45,10 @@ end
 // 50Mhz
 assign pclk = q[0];
 
-// 50Mhz ÷ 2^17 = 381.47Hz
+// 50Mhz  2^17 = 381.47Hz
 assign segclk = q[16];
 
-// 50Mhz ÷ 2^1 = 25MHz
+// 50Mhz  2^1 = 25MHz
 assign dclk = q[1];
 
 endmodule
