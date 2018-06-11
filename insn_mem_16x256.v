@@ -9,7 +9,7 @@ module insn_mem_16x256 (
   reg [15:0] ram [255:0];
 
   initial begin
-    $readmemb("/home/maria/cs152/final/archel/program.archel", ram, 0, 255);
+    $readmemb("program.archel", ram, 0, 255);
   end // initial
 
   assign rd = ram[ra];
